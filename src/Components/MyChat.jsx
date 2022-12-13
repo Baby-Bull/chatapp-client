@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { accessChat, makeRecentChatApi } from "./Redux/RecentChat/action";
 import { selectChat } from "./Redux/Chatting/action";
 import { removeSeenMsg } from "./Redux/Notification/action";
+
 export const MyChat = () => {
   const [search, setSearch] = useState(false);
   const { search_result, loading, error } = useSelector(
@@ -18,6 +19,8 @@ export const MyChat = () => {
   const { recent_chat, loading: chat_loading } = useSelector(
     (store) => store.recentChat
   );
+
+  console.log(recent_chat);
   const { user, token } = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
   const { notification, unseenmsg } = useSelector(
@@ -48,7 +51,7 @@ export const MyChat = () => {
       <div>
         <div className="notification">
           <h2>Chats</h2>
-          {/* <NotificationsIcon /> */}
+          <NotificationsIcon />
           <Badge badgeContent={notification} color="error">
             <Notificationcomp />
           </Badge>
@@ -68,24 +71,24 @@ export const MyChat = () => {
         <div className="recent-user">
           {search
             ? search_result.map((el) => (
-                <SearchUserComp
-                  key={el._id}
-                  {...el}
-                  token={token}
-                  recent_chat={recent_chat}
-                  setSearch={setSearch}
-                />
-              ))
+              <SearchUserComp
+                key={el._id}
+                {...el}
+                token={token}
+                recent_chat={recent_chat}
+                setSearch={setSearch}
+              />
+            ))
             : !chat_loading &&
-              recent_chat.map((el, index) => (
-                <ChatUserComp
-                  key={el._id}
-                  {...el}
-                  index={index}
-                  chattingwith={chatting._id}
-                  id={user._id}
-                />
-              ))}
+            recent_chat.map((el, index) => (
+              <ChatUserComp
+                // key={el._id}
+                index={index}
+                {...el}
+              // chattingwith={chatting._id}
+              // id={user._id}
+              />
+            ))}
         </div>
       </div>
     </div>
@@ -135,63 +138,67 @@ export default function Notificationcomp() {
   );
 }
 const ChatUserComp = ({
-  isGroupChat,
-  chatName,
-  users,
-  latestMessage,
-  id,
+  type,
+  chatroom_title,
+  profile_picture,
+  members,
+  lastest_message,
   _id,
-  index,
-  chattingwith,
+  index
 }) => {
   const dispatch = useDispatch();
   const handleSelectChat = () => {
     dispatch(
       selectChat({
-        isGroupChat,
-        index,
-        user: users.find((el) => el._id != id),
+        type,
+        chatroom_title,
+        profile_picture,
+        members,
+        lastest_message,
         _id,
-        chatName,
+        index
       })
     );
   };
   return (
     <div
       onClick={handleSelectChat}
-      className={chattingwith == _id ? "user selectUser" : "user"}
+      //className={chattingwith == _id ? "user selectUser" : "user"}
+      className="user selectUser"
     >
       <div className="history-cont">
-        {isGroupChat ? (
+        {(type === "group") ? (
           <div>{<Avatar>G</Avatar>}</div>
         ) : (
-          <div>{<Avatar src={users.find((el) => el._id != id)?.pic} />}</div>
+          // <div>{<Avatar src={users.find((el) => el._id != id)?.pic} />}</div>
+          <div>{<Avatar>P</Avatar>}</div>
         )}
         <div>
-          {isGroupChat ? (
-            <p className="name">{chatName}</p>
+          {(type === "group") ? (
+            <p className="name">{chatroom_title || "No Name"}</p>
           ) : (
-            <p className="name">{users.find((el) => el._id != id)?.name}</p>
+            // <p className="name">{users.find((el) => el._id != id)?.name}</p>
+            <p className="name">Group 1-112</p>
           )}
           <p className="chat">
-            {latestMessage
-              ? latestMessage.content.length > 8
-                ? latestMessage.content.substring(0, 30) + " . . ."
-                : latestMessage.content
+            {lastest_message
+              ? lastest_message?.length > 8
+                ? lastest_message?.substring(0, 15) + " ..."
+                : lastest_message
               : ""}
           </p>
         </div>
       </div>
       <div>
-        {latestMessage ? (
+        {/* {lastest_message ? (
           <p className="time">
-            {new Date(latestMessage?.updatedAt).getHours() +
+            {new Date(lastest_message?.updatedAt).getHours() +
               ":" +
-              new Date(latestMessage?.updatedAt).getMinutes()}
+              new Date(lastest_message?.updatedAt).getMinutes()}
           </p>
         ) : (
           ""
-        )}
+        )} */}
         {/* <p className="unseen-chat">5</p> */}
       </div>
     </div>

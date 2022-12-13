@@ -10,19 +10,11 @@ export const authLoading = (payload) => ({ type: AUTH_LOADING, payload });
 export const authError = (payload) => ({ type: AUTH_ERROR, payload });
 export const authLogout = () => ({ type: LOGOUT, payload: {} });
 
-export const authRegister = (url, user) => async (dispatch) => {
+export const authRegister = (res) => async (dispatch) => {
   dispatch(authLoading(true));
   try {
-    let res = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(user),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
-    let data = await res.json();
-    localStorage.setItem("userInfo", JSON.stringify(data));
-    dispatch(authUser(data));
+    localStorage.setItem("userInfo", JSON.stringify(res));
+    dispatch(authUser(res));
   } catch (err) {
     dispatch(authLoading(false));
     dispatch(authError(true));
@@ -51,3 +43,15 @@ export const uploadPic = (pic) => async (dispatch) => {
     console.log(error.message);
   }
 };
+
+export const logout = () => async (dispatch) => {
+  dispatch(authLoading(true));
+  try {
+    localStorage.removeItem("userInfo");
+    dispatch(logout());
+  } catch (err) {
+    dispatch(authLoading(false));
+    dispatch(authError(true));
+    console.log(err.message);
+  }
+}

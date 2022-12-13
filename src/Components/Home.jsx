@@ -1,6 +1,7 @@
 import { Avatar } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
+import SocketHandle from "../Utils/socket";
 import { ChattingPage } from "./ChattingPage";
 import { MyChat } from "./MyChat";
 import SideNavbar from "./SideNavbar";
@@ -8,6 +9,9 @@ import SideNavbar from "./SideNavbar";
 export const HomeComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
+  if(user._id){
+    SocketHandle()
+  }
 
   if (!user._id) {
     return <Navigate to="/register" />;

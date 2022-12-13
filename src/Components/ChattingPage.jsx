@@ -20,17 +20,22 @@ var socket, currentChattingWith;
 export const ChattingPage = () => {
   const { user, token } = useSelector((store) => store.user);
   const { messages } = useSelector((store) => store.chatting);
+  console.log(messages);
   var { unseenmsg } = useSelector((store) => store.notification);
   const {
     chatting: {
-      isGroupChat,
-      chatName,
-      user: { pic, name },
+      type,
+      chatroom_title,
+      profile_picture,
+      members,
+      lastest_message,
       _id,
     },
   } = useSelector((store) => store.chatting);
+
   const scrolldiv = createRef();
   const dispatch = useDispatch();
+
   useEffect(() => {
     socket = io(SERVER_POINT);
     socket.emit("setup", user);
@@ -38,13 +43,14 @@ export const ChattingPage = () => {
       // setconnectedtosocket(true);
     });
   }, []);
+
   useEffect(() => {
     //_id is of selected chat so that user can join same chat room
     if (!_id) return;
     dispatch(fetchCurrentMessages(_id, token, socket));
-
     currentChattingWith = _id;
   }, [_id]);
+
   useEffect(() => {
     const scrollToBottom = (node) => {
       node.scrollTop = node.scrollHeight;
@@ -68,8 +74,8 @@ export const ChattingPage = () => {
     <div className="chattingpage">
       <div className="top-header">
         <div className="user-header">
-          <Avatar src={isGroupChat ? "" : pic} />
-          <p className="user-name">{isGroupChat ? chatName : name}</p>
+          <Avatar src={type === "group" ? profile_picture : "P"} />
+          <p className="user-name">{type === "group" ? chatroom_title : "username"}</p>
         </div>
         <div>
           <div className="user-fet">
@@ -81,17 +87,17 @@ export const ChattingPage = () => {
         </div>
       </div>
       <div ref={scrolldiv} className="live-chat">
-        {messages.map((el, index) => (
+        {messages?.map((el, index) => (
           <div
             key={index}
             className={
-              el.sender._id != user._id ? "rihgtuser-chat" : "leftuser-chat"
+              el.sender_id != user._id ? "rihgtuser-chat" : "leftuser-chat"
             }
           >
             <div
-              className={el.sender._id != user._id ? "right-avt" : "left-avt"}
+              className={el.sender_id != user._id ? "right-avt" : "left-avt"}
             >
-              <div className={ChatlogicStyling(el.sender._id, user._id)}>
+              <div className={ChatlogicStyling(el.sender_id, user._id)}>
                 <p>{el.content}</p>
                 <p className="time chat-time">
                   {new Date(el.createdAt).getHours() +
@@ -102,7 +108,8 @@ export const ChattingPage = () => {
 
               {isSameSender(messages, index) ? (
                 <Avatar
-                  src={el.sender._id != user._id ? el.sender.pic : user.pic}
+                  //src={el.sender_id != user._id ? el.sender.pic : user.pic}
+                  src={""}
                 />
               ) : (
                 <div className="blank-div"></div>

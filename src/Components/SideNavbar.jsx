@@ -6,11 +6,15 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import { useDispatch } from "react-redux";
+import LogoutIcon from '@mui/icons-material/Logout';
 import styled from "@emotion/styled";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import CustomizedDialogs from "./GroupMode";
+import { logout } from "./Redux/Auth/action";
 export default function SideNavbar() {
   const { user, loading, error } = useSelector((store) => store.user);
+  const dispatch = useDispatch();
 
   return (
     <div className="side-nav">
@@ -39,6 +43,7 @@ export default function SideNavbar() {
         <LightTooltip placement="top" title="Dark/Light Mode">
           <DarkModeOutlinedIcon />
         </LightTooltip>
+        <LogoutIcon onClick={() => logout()} />
       </div>
     </div>
   );

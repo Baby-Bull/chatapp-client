@@ -3,10 +3,11 @@ import avatar from "./profileimg.png";
 import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, redirect } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
 import { authRegister, uploadPic } from "../Redux/Auth/action";
+import { register } from "../../Services/auth";
 export const RegisterComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const [regData, setRegData] = useState({
@@ -31,13 +32,17 @@ export const RegisterComp = () => {
     };
     reader.readAsDataURL(file);
   };
-  const handleSubmit = () => {
-    const url = "http://localhost:8000/auth";
-    if (user.pic) regData["pic"] = user.pic;
-    dispatch(authRegister(url, regData));
+  const handleSubmit = async () => {
+    const res = await register(regData);
+    //if (user.pic) regData["pic"] = user.pic;
+    console.log(res);
+    if (res?.statusCode === 200) {
+      console.log("pass register");
+      return <Navigate to={"/login"} />;
+    }
   };
   if (user._id) {
-    return <Navigate to={"/"} />;
+    return <Navigate to={"/login"} />;
   }
   return (
     <div className="auth-cont">

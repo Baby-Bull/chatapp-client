@@ -1,3 +1,5 @@
+import { getAllMessagesInChatRoom } from "../../../Services/chat";
+
 export const SELECT_CHAT = "SELECT_CHAT";
 export const ADD_MESSAGE = "ADD_MESSAGE";
 export const MESSAGE_LOADING = "MESSAGE_LOADING";
@@ -12,16 +14,8 @@ export const sendMessage = (payload) => ({ type: SEND_MESSAGE, payload });
 
 export const fetchCurrentMessages = (id, token, socket) => async (dispatch) => {
   dispatch(messageLoading(true));
-  const url = `http://localhost:8000/message/${id}`;
   try {
-    let res = await fetch(url, {
-      method: "GET",
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    let data = await res.json();
+    let data = await getAllMessagesInChatRoom(id);
     socket.emit("join chat", id);
     dispatch(addMessage(data));
   } catch (err) {

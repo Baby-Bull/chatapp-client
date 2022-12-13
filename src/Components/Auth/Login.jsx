@@ -8,6 +8,7 @@ import { Link, Navigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
 import { authRegister } from "../Redux/Auth/action";
+import { login } from "../../Services/auth";
 export const LoginComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const [regData, setRegData] = useState({
@@ -20,10 +21,12 @@ export const LoginComp = () => {
     setRegData({ ...regData, [name]: value });
   };
 
-  const handleSubmit = () => {
-    const url = "http://localhost:8000/auth/login";
-    dispatch(authRegister(url, regData));
+  const handleSubmit = async () => {
+    const res = await login(regData.email, regData.password);
+    console.log(res);
+    dispatch(authRegister(res));
   };
+
   if (user._id) {
     return <Navigate to={"/"} />;
   }

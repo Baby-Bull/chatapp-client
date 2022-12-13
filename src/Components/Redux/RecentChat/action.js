@@ -2,7 +2,8 @@ export const RECENT_LOADING = "RECENT_LOADING";
 export const RECENT_ERROR = "RECENT_ERROR";
 export const ADD_RECENT_CHAT = "ADD_RECENT_CHAT";
 export const NEW_CREATED_CHAT = "NEW_CREATED_CHAT";
-import { selectChat } from "../Chatting/action";
+import { getAllChatroom } from "../../../Services/chat";
+import { addMessage, selectChat } from "../Chatting/action";
 export const recentLoding = (payload) => ({ type: RECENT_LOADING, payload });
 export const recentError = (payload) => ({ type: RECENT_ERROR, payload });
 export const recentChatResult = (payload) => ({
@@ -16,17 +17,11 @@ export const newCreatedChat = (payload) => ({
 
 export const makeRecentChatApi = (token) => async (dispatch) => {
   recentLoding(true);
-  const url = `http://localhost:8000/chat`;
   try {
-    let res = await fetch(url, {
-      method: "get",
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    let data = await res.json();
-    dispatch(recentChatResult(data));
+    let res = await getAllChatroom();
+    console.log(res);
+    dispatch(recentChatResult(res));
+    dispatch(addMessage(res[0].messages));
   } catch (err) {
     dispatch(recentError(true));
     console.log(err.message);
@@ -71,6 +66,7 @@ export const accessChat = (userId, token, recentchat) => async (dispatch) => {
       dispatch(newCreatedChat(data));
       dispatch(
         selectChat({
+          
           isGroupChat: data.isGroupChat,
           index: 0,
           user: data.users.find((el) => el._id == userId),
