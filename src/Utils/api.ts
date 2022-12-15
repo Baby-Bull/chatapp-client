@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getTokenFromCookie } from "./storage";
+import { getItemFromCookie } from "./storage";
 
 export const api = axios.create({
     baseURL: 'http://localhost:8000',
@@ -20,4 +20,4 @@ export const setApi = (token: string) => {
     }
 };
 
-setApi(getTokenFromCookie("user_token"));
+setApi(getItemFromCookie("USER_TOKEN"));

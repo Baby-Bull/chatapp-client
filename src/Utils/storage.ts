@@ -1,15 +1,27 @@
 import { parseCookies, setCookie } from "nookies";
-import cookie from "cookie";
 
-const handleTokenToCookie = (key: string, tokenValue: string) => {
-    setCookie(null, key, tokenValue, {
-        path: "/"
+const USER_TOKEN = "USER_TOKEN";
+const MAXAGE_TOKEN = "MAXAGE_TOKEN";
+const REFRESH_TOKEN = "REFRESH_TOKEN";
+
+export const setItemToCookie = (key: string, value: any) => {
+    setCookie(null, key, value, {
+        path: "/",
+        // httpOnly: true
     });
 }
-
-export const getTokenFromCookie = (key: string) => {
-    const tokenStorage = parseCookies();
-    return tokenStorage[key] ?? "";
+export const getItemFromCookie = (key: string) => {
+    const cookieRes = parseCookies();
+    return cookieRes[key] ?? "";
 }
 
-//to-do validate expried token and work with refresh token
+export const setUserToken = (valueToken: string, timeExpried: number) => {
+    setItemToCookie(USER_TOKEN, valueToken);
+    if (timeExpried) {
+        setItemToCookie(MAXAGE_TOKEN, timeExpried);
+    }
+}
+
+export const setRefreshToken = (valueToken: string) => {
+    setItemToCookie(REFRESH_TOKEN, valueToken);
+}

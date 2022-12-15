@@ -20,7 +20,6 @@ export const MyChat = () => {
     (store) => store.recentChat
   );
 
-  console.log(recent_chat);
   const { user, token } = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
   const { notification, unseenmsg } = useSelector(

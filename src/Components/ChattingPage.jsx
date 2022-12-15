@@ -20,7 +20,6 @@ var socket, currentChattingWith;
 export const ChattingPage = () => {
   const { user, token } = useSelector((store) => store.user);
   const { messages } = useSelector((store) => store.chatting);
-  console.log(messages);
   var { unseenmsg } = useSelector((store) => store.notification);
   const {
     chatting: {
@@ -37,11 +36,11 @@ export const ChattingPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    socket = io(SERVER_POINT);
-    socket.emit("setup", user);
-    socket.on("connected", () => {
-      // setconnectedtosocket(true);
-    });
+    // socket = io(SERVER_POINT);
+    // socket.emit("setup", user);
+    // socket.on("connected", () => {
+    //   // setconnectedtosocket(true);
+    // });
   }, []);
 
   useEffect(() => {
@@ -59,13 +58,13 @@ export const ChattingPage = () => {
   });
 
   useEffect(() => {
-    socket.on("message recieved", (newMessage) => {
-      if (!currentChattingWith || currentChattingWith !== newMessage.chat._id) {
-        handleNotyfy(newMessage);
-      } else {
-        dispatch(sendMessage(newMessage));
-      }
-    });
+    // socket.on("message recieved", (newMessage) => {
+    //   if (!currentChattingWith || currentChattingWith !== newMessage.chat._id) {
+    //     handleNotyfy(newMessage);
+    //   } else {
+    //     dispatch(sendMessage(newMessage));
+    //   }
+    // });
   }, []);
   const handleNotyfy = (newMessage) => {
     dispatch(addUnseenmsg(newMessage));
@@ -119,7 +118,11 @@ export const ChattingPage = () => {
         ))}
       </div>
       <div className="sender-cont">
-        <InputContWithEmog id={_id} token={token} socket={socket} />
+        <InputContWithEmog
+          id={_id}
+          token={token}
+        //socket={socket} 
+        />
       </div>
     </div>
   );

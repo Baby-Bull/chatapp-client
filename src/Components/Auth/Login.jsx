@@ -9,6 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
 import { authRegister } from "../Redux/Auth/action";
 import { login } from "../../Services/auth";
+import { setRefreshToken, setUserToken } from "../../Utils/storage";
 export const LoginComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const [regData, setRegData] = useState({
@@ -23,7 +24,8 @@ export const LoginComp = () => {
 
   const handleSubmit = async () => {
     const res = await login(regData.email, regData.password);
-    console.log(res);
+    setUserToken(res?.token?.access?.token, res?.token?.access?.expires)
+    setRefreshToken(res?.token?.refresh?.token)
     dispatch(authRegister(res));
   };
 

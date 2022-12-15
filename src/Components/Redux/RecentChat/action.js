@@ -19,7 +19,6 @@ export const makeRecentChatApi = (token) => async (dispatch) => {
   recentLoding(true);
   try {
     let res = await getAllChatroom();
-    console.log(res);
     dispatch(recentChatResult(res));
     dispatch(addMessage(res[0].messages));
   } catch (err) {
@@ -61,7 +60,6 @@ export const accessChat = (userId, token, recentchat) => async (dispatch) => {
       },
     });
     let data = await res.json();
-    console.log(data);
     if (!recentchat.find((el) => el._id === data._id)) {
       dispatch(newCreatedChat(data));
       dispatch(
