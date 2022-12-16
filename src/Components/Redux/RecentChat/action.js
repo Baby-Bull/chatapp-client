@@ -15,12 +15,12 @@ export const newCreatedChat = (payload) => ({
   payload,
 });
 
-export const makeRecentChatApi = (token) => async (dispatch) => {
+export const makeRecentChatApi = (token, user_id) => async (dispatch) => {
   recentLoding(true);
   try {
-    let res = await getAllChatroom();
+    let res = await getAllChatroom(user_id);
     dispatch(recentChatResult(res));
-    dispatch(addMessage(res[0].messages));
+    //dispatch(addMessage(res[0].messages));
   } catch (err) {
     dispatch(recentError(true));
     console.log(err.message);
@@ -64,7 +64,7 @@ export const accessChat = (userId, token, recentchat) => async (dispatch) => {
       dispatch(newCreatedChat(data));
       dispatch(
         selectChat({
-          
+
           isGroupChat: data.isGroupChat,
           index: 0,
           user: data.users.find((el) => el._id == userId),

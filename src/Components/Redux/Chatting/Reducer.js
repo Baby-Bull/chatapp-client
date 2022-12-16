@@ -29,11 +29,22 @@ export const chattingReducer = (store = initState, { type, payload }) => {
         error: false,
       };
     case ADD_MESSAGE:
-      return { ...store, messages: payload, loading: false, error: false };
+      return {
+        ...store,
+        messages: payload,
+        loading: false,
+        error: false
+      };
     case MESSAGE_LOADING:
-      return { ...store, loading: payload };
+      return {
+        ...store,
+        loading: payload
+      };
     case MESSAGE_ERROR:
-      return { ...store, error: payload };
+      return {
+        ...store,
+        error: payload
+      };
     default:
       return store;
   }

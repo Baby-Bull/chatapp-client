@@ -16,7 +16,7 @@ export const fetchCurrentMessages = (id, token, socket) => async (dispatch) => {
   dispatch(messageLoading(true));
   try {
     let data = await getAllMessagesInChatRoom(id);
-    socket.emit("join chat", id);
+    //socket.emit("join chat", id);
     dispatch(addMessage(data));
   } catch (err) {
     console.log(err);

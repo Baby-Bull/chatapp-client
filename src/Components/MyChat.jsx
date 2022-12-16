@@ -27,7 +27,7 @@ export const MyChat = () => {
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    if (token) dispatch(makeRecentChatApi(token));
+    if (token) dispatch(makeRecentChatApi(token, user?._id));
   }, [user]);
   const ref = useRef();
   const handleQuery = (e) => {

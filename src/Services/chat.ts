@@ -14,9 +14,9 @@ export const getAnUser = async (params: any) => {
 
 }
 
-export const getAllChatroom = async () => {
+export const getAllChatroom = async (user_id: string = "") => {
     try {
-        const res = await api.get(`/chat-rooms`);
+        const res = await api.get(`/chat-rooms/byUserId/${user_id}`);
         return res.data;
     } catch (error) {
         return error
@@ -25,8 +25,16 @@ export const getAllChatroom = async () => {
 
 export const getAllMessagesInChatRoom = async (chatId: any) => {
     try {
-        const res = await api.get(`/messages`, { params: { chatroom_id: chatId } });
+        const res = await api.get(`/messages/${chatId}`);
         return res.data;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const createNewMessage = async () => {
+    try {
+        const res = await api.post(`/messages`)
     } catch (error) {
         return error;
     }

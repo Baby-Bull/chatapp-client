@@ -19,7 +19,6 @@ var socket, currentChattingWith;
 
 export const ChattingPage = () => {
   const { user, token } = useSelector((store) => store.user);
-  const { messages } = useSelector((store) => store.chatting);
   var { unseenmsg } = useSelector((store) => store.notification);
   const {
     chatting: {
@@ -30,6 +29,7 @@ export const ChattingPage = () => {
       lastest_message,
       _id,
     },
+    messages
   } = useSelector((store) => store.chatting);
 
   const scrolldiv = createRef();
@@ -127,6 +127,7 @@ export const ChattingPage = () => {
     </div>
   );
 };
+
 const ColorButton = styled(Button)(() => ({
   color: "white",
   fontSize: "20px",
@@ -138,6 +139,7 @@ const ColorButton = styled(Button)(() => ({
     backgroundColor: "#3a45c3",
   },
 }));
+
 function InputContWithEmog({ id, token, socket }) {
   const [text, setText] = useState("");
   const dispatch = useDispatch();
@@ -167,7 +169,6 @@ function InputContWithEmog({ id, token, socket }) {
     );
     setText("");
   }
-
   return (
     <>
       <div className="search-cont send-message">
