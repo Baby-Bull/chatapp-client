@@ -1,4 +1,4 @@
-import { getAllMessagesInChatRoom } from "../../../Services/chat";
+import { createNewMessage, getAllMessagesInChatRoom } from "../../../Services/chat";
 
 export const SELECT_CHAT = "SELECT_CHAT";
 export const ADD_MESSAGE = "ADD_MESSAGE";
@@ -24,21 +24,15 @@ export const fetchCurrentMessages = (id, token, socket) => async (dispatch) => {
   }
 };
 
-export const sendMessageApi = (msg, token, socket) => async (dispatch) => {
-  const url = `http://localhost:8000/message/`;
+export const sendMessageApi = (payload, token, socket) => async (dispatch) => {
   try {
-    let res = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(msg),
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    let data = await res.json();
-    socket.emit("new message", data);
-    dispatch(sendMessage(data));
+    // const data = await createNewMessage(payload)
+    // console.log(data);
+    // socket.emit("new message", data);
+    dispatch(sendMessage(payload));
+    return payload;
   } catch (err) {
     console.log(err.message);
+    return err;
   }
 };

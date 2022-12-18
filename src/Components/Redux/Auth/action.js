@@ -13,7 +13,9 @@ export const authLogout = () => ({ type: LOGOUT, payload: {} });
 export const authRegister = (res) => async (dispatch) => {
   dispatch(authLoading(true));
   try {
+    console.log(res?.user?._id);
     localStorage.setItem("userInfo", JSON.stringify(res));
+    localStorage.setItem("userId", res?.user?._id);
     dispatch(authUser(res));
   } catch (err) {
     dispatch(authLoading(false));

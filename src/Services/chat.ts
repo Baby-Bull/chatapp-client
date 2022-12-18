@@ -32,9 +32,10 @@ export const getAllMessagesInChatRoom = async (chatId: any) => {
     }
 }
 
-export const createNewMessage = async () => {
+export const createNewMessage = async (payload: any) => {
     try {
-        const res = await api.post(`/messages`)
+        const res = await api.post(`/messages`, payload)
+        return res.data;
     } catch (error) {
         return error;
     }

@@ -12,8 +12,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentMessages, sendMessageApi } from "./Redux/Chatting/action";
 import { sendMessage } from "./Redux/Chatting/action";
 import { addUnseenmsg } from "./Redux/Notification/action";
+import webSocket from "../Utils/socket";
 
 import io from "socket.io-client";
+import socketResult from "../Utils/socket";
 const SERVER_POINT = "http://localhost:8000";
 var socket, currentChattingWith;
 
@@ -36,11 +38,13 @@ export const ChattingPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // socket = io(SERVER_POINT);
-    // socket.emit("setup", user);
-    // socket.on("connected", () => {
-    //   // setconnectedtosocket(true);
-    // });
+
+    const handleMessage = (rev_message) => {
+      console.log(rev_message);
+      // InputContWithEmog(user?._id, _id)
+    }
+    webSocket.on("getMessagePersonal", handleMessage);
+
   }, []);
 
   useEffect(() => {
@@ -119,6 +123,7 @@ export const ChattingPage = () => {
       </div>
       <div className="sender-cont">
         <InputContWithEmog
+          _sender_id={user._id}
           id={_id}
           token={token}
         //socket={socket} 
@@ -140,31 +145,37 @@ const ColorButton = styled(Button)(() => ({
   },
 }));
 
-function InputContWithEmog({ id, token, socket }) {
+function InputContWithEmog({ _sender_id, id }) {
   const [text, setText] = useState("");
   const dispatch = useDispatch();
+  const instancePayload = {
+    message_type: "personal_message_from_client",
+    content: text,
+    content_type: "text", // to-do modify attribute to match with any type of input (file, image, text ...)
+    chatroom_id: id,
+    sender_id: _sender_id
+  }
 
+  const handleSentMessageToServer = () => {
+    socketResult.emit(instancePayload);
+  }
   function handleOnEnter(text) {
+    handleSentMessageToServer();
     dispatch(
       sendMessageApi(
-        {
-          content: text,
-          chatId: id,
-        },
-        token,
-        socket
+        instancePayload,
+        //token,
+        //socket
       )
     );
   }
   function handleChatClick() {
+    handleSentMessageToServer();
     dispatch(
       sendMessageApi(
-        {
-          content: text,
-          chatId: id,
-        },
-        token,
-        socket
+        instancePayload,
+        //token,
+        //socket
       )
     );
     setText("");
