@@ -16,7 +16,6 @@ export const fetchCurrentMessages = (id, token, socket) => async (dispatch) => {
   dispatch(messageLoading(true));
   try {
     let data = await getAllMessagesInChatRoom(id);
-    //socket.emit("join chat", id);
     dispatch(addMessage(data));
   } catch (err) {
     console.log(err);
@@ -26,9 +25,6 @@ export const fetchCurrentMessages = (id, token, socket) => async (dispatch) => {
 
 export const sendMessageApi = (payload, token, socket) => async (dispatch) => {
   try {
-    // const data = await createNewMessage(payload)
-    // console.log(data);
-    // socket.emit("new message", data);
     dispatch(sendMessage(payload));
     return payload;
   } catch (err) {

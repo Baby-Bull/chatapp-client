@@ -14,9 +14,9 @@ import { sendMessage } from "./Redux/Chatting/action";
 import { addUnseenmsg } from "./Redux/Notification/action";
 import webSocket from "../Utils/socket";
 
-import io from "socket.io-client";
 import socketResult from "../Utils/socket";
-const SERVER_POINT = "http://localhost:8000";
+import dayjs from "dayjs";
+
 var socket, currentChattingWith;
 
 export const ChattingPage = () => {
@@ -38,16 +38,19 @@ export const ChattingPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
+    const abortController = new AbortController();
     const handleMessage = (rev_message) => {
-      console.log(rev_message);
+      dispatch(sendMessage(rev_message))
       // InputContWithEmog(user?._id, _id)
     }
-    webSocket.on("getMessagePersonal", handleMessage);
+    webSocket.on("personal_message_from_server", handleMessage);
 
+    return (() => {
+    })
   }, []);
 
   useEffect(() => {
+    const abortController = new AbortController();
     //_id is of selected chat so that user can join same chat room
     if (!_id) return;
     dispatch(fetchCurrentMessages(_id, token, socket));
@@ -55,24 +58,27 @@ export const ChattingPage = () => {
   }, [_id]);
 
   useEffect(() => {
+    const abortController = new AbortController();
     const scrollToBottom = (node) => {
       node.scrollTop = node.scrollHeight;
     };
     scrollToBottom(scrolldiv.current);
   });
 
-  useEffect(() => {
-    // socket.on("message recieved", (newMessage) => {
-    //   if (!currentChattingWith || currentChattingWith !== newMessage.chat._id) {
-    //     handleNotyfy(newMessage);
-    //   } else {
-    //     dispatch(sendMessage(newMessage));
-    //   }
-    // });
-  }, []);
+  // useEffect(() => {
+  //   // socket.on("message recieved", (newMessage) => {
+  //   //   if (!currentChattingWith || currentChattingWith !== newMessage.chat._id) {
+  //   //     handleNotyfy(newMessage);
+  //   //   } else {
+  //   //     dispatch(sendMessage(newMessage));
+  //   //   }
+  //   // });
+  // }, []);
+
   const handleNotyfy = (newMessage) => {
     dispatch(addUnseenmsg(newMessage));
   };
+  
   return (
     <div className="chattingpage">
       <div className="top-header">
@@ -153,7 +159,8 @@ function InputContWithEmog({ _sender_id, id }) {
     content: text,
     content_type: "text", // to-do modify attribute to match with any type of input (file, image, text ...)
     chatroom_id: id,
-    sender_id: _sender_id
+    sender_id: _sender_id,
+    createdAt: dayjs()
   }
 
   const handleSentMessageToServer = () => {
@@ -164,8 +171,6 @@ function InputContWithEmog({ _sender_id, id }) {
     dispatch(
       sendMessageApi(
         instancePayload,
-        //token,
-        //socket
       )
     );
   }
@@ -174,8 +179,6 @@ function InputContWithEmog({ _sender_id, id }) {
     dispatch(
       sendMessageApi(
         instancePayload,
-        //token,
-        //socket
       )
     );
     setText("");
