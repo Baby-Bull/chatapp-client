@@ -28,9 +28,9 @@ export default function SideNavbar() {
         <LightTooltip placement="top" title="Chats">
           <ChatOutlinedIcon />
         </LightTooltip>
-        {/* <LightTooltip placement="top" title="Groups"> */}
-        <CustomizedDialogs />
-        {/* </LightTooltip> */}
+        <LightTooltip placement="top" title="Groups">
+          <CustomizedDialogs />
+        </LightTooltip>
         <LightTooltip placement="top" title="Contacts">
           <AssignmentIndOutlinedIcon />
         </LightTooltip>
@@ -45,7 +45,7 @@ export default function SideNavbar() {
         </LightTooltip>
         <LogoutIcon onClick={() => logout()} />
       </div>
-    </div>
+    </div >
   );
 }
 

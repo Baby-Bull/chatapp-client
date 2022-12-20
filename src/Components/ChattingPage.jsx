@@ -16,6 +16,9 @@ import webSocket from "../Utils/socket";
 
 import socketResult from "../Utils/socket";
 import dayjs from "dayjs";
+import { ImageUpload } from "./MiniComponents/ImageUpload";
+import CallingSentPanel from "./MiniComponents/CallingSentPanel";
+import CallingReceivedPanel from "./MiniComponents/CallingReceivedPanel";
 
 var socket, currentChattingWith;
 
@@ -78,7 +81,7 @@ export const ChattingPage = () => {
   const handleNotyfy = (newMessage) => {
     dispatch(addUnseenmsg(newMessage));
   };
-  
+
   return (
     <div className="chattingpage">
       <div className="top-header">
@@ -132,9 +135,10 @@ export const ChattingPage = () => {
           _sender_id={user._id}
           id={_id}
           token={token}
-        //socket={socket} 
         />
       </div>
+      {/* <CallingSentPanel /> */}
+      {/* <CallingReceivedPanel /> */}
     </div>
   );
 };
@@ -194,6 +198,7 @@ function InputContWithEmog({ _sender_id, id }) {
           placeholder="Type a message"
         />
       </div>
+      <ImageUpload />
       <ColorButton
         onClick={handleChatClick}
         variant="contained"
