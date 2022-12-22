@@ -294,14 +294,14 @@ body {
 }
 
 .left-msg {
-  background-color: #7269ef;
+  background-color: #f5f7fb;
   padding: 8px;
   border-radius: 10px;
   margin: 3px;
 }
 
 .right-msg {
-  background-color: #f5f7fb;
+  background-color: #7269ef;
   padding: 8px;
   border-radius: 10px;
   margin: 3px;
@@ -309,11 +309,11 @@ body {
 
 .left-msg p {
   margin: 0px;
-  color: white;
 }
 
 .right-msg p {
   margin: 0px;
+  color: white;
 }
 
 .blank-div {

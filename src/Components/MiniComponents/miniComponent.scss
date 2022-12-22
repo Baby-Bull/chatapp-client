@@ -18,6 +18,12 @@
         max-height: inherit;
     }
 
+    .progress_bar {
+        position: absolute;
+        width: calc(100% - 5em);
+        bottom: 1em;
+    }
+
     .preview_close {
         color: rgb(187, 187, 187);
         font-size: 1.5em;

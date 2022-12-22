@@ -1,4 +1,4 @@
-import { Avatar, Button } from "@mui/material";
+import { Avatar, Box, Button, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CallIcon from "@mui/icons-material/Call";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
@@ -6,8 +6,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styled from "@emotion/styled";
 import SendIcon from "@mui/icons-material/Send";
 import InputEmoji from "react-input-emoji";
-import ImageIcon from '@mui/icons-material/Image';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import CircularProgress from '@mui/material/CircularProgress';
 import React, { createRef, useCallback, useEffect, useState } from "react";
 import { ChatlogicStyling, isSameSender } from "./ChatstyleLogic";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +15,9 @@ import { sendMessage } from "./Redux/Chatting/action";
 import { addUnseenmsg } from "./Redux/Notification/action";
 import webSocket from "../Utils/socket";
 
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { storage } from "../Utils/firebase";
+
 import socketResult from "../Utils/socket";
 import dayjs from "dayjs";
 import { ImageUpload } from "./MiniComponents/ImageUpload";
@@ -23,10 +25,23 @@ import CallingSentPanel from "./MiniComponents/CallingSentPanel";
 import CallingReceivedPanel from "./MiniComponents/CallingReceivedPanel";
 
 var socket, currentChattingWith;
+const ColorButton = styled(Button)(() => ({
+  color: "white",
+  fontSize: "20px",
+  textTransform: "none",
+  padding: "12px",
+  marginRight: "15px",
+  backgroundColor: "#5865f2",
+  "&:hover": {
+    backgroundColor: "#3a45c3",
+  },
+}));
+
 
 export const ChattingPage = () => {
   const { user, token } = useSelector((store) => store.user);
   var { unseenmsg } = useSelector((store) => store.notification);
+
   const {
     chatting: {
       type,
@@ -105,22 +120,24 @@ export const ChattingPage = () => {
         {messages?.map((el, index) => (
           <div
             key={index}
-            className={
-              el.sender_id !== user._id ? "rihgtuser-chat" : "leftuser-chat"
-            }
+            className={el.sender_id !== user._id ? "rihgtuser-chat" : "leftuser-chat"}
           >
-            <div
-              className={el.sender_id !== user._id ? "right-avt" : "left-avt"}
-            >
+            <div className={el.sender_id !== user._id ? "right-avt" : "left-avt"}>
               <div className={ChatlogicStyling(el.sender_id, user._id)}>
-                <p>{el.content}</p>
+                {el.content_type === "text" ?
+                  <p>{el.content}</p> :
+                  <embed
+                    className="img_message"
+                    src={el.content}
+                    alt=""
+                  />
+                }
                 <p className="time chat-time">
                   {new Date(el.createdAt).getHours() +
                     ":" +
                     new Date(el.createdAt).getMinutes()}
                 </p>
               </div>
-
               {isSameSender(messages, index) ? (
                 <Avatar
                   //src={el.sender_id != user._id ? el.sender.pic : user.pic}
@@ -142,68 +159,97 @@ export const ChattingPage = () => {
       </div>
       {/* <CallingSentPanel /> */}
       {/* <CallingReceivedPanel /> */}
-    </div>
+    </div >
   );
 };
 
-const ColorButton = styled(Button)(() => ({
-  color: "white",
-  fontSize: "20px",
-  textTransform: "none",
-  padding: "12px",
-  marginRight: "15px",
-  backgroundColor: "#5865f2",
-  "&:hover": {
-    backgroundColor: "#3a45c3",
-  },
-}));
-
 function InputContWithEmog({ _sender_id, id }) {
-  const [text, setText] = useState("");
+  const [content_input, setContent] = useState("");
+  const [content_type, setContent_type] = useState("text");
+  const [selectedFile, setSelectedFile] = useState();
+  const [progress, setProgress] = useState(0);
+
   const dispatch = useDispatch();
-  const instancePayload = {
+  let instancePayload = {
     message_type: "personal_message_from_client",
-    content: text,
-    content_type: "text", // to-do modify attribute to match with any type of input (file, image, text ...)
+    content: content_input,
+    content_type: content_type, // to-do modify attribute to match with any type of input (file, image, text ...)
     chatroom_id: id,
     sender_id: _sender_id,
     createdAt: dayjs()
   }
+  const uploadImage = (file) => {
+    return new Promise((resolve, reject) => {
+      if (!file) return;
+      const storageRef = ref(storage, `images/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on("state_changed",
+        (snapshot) => {
+          const prog = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setProgress(prog);
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
+              resolve(downloadURL);
+            })
+        }
+      )
+    })
+  }
 
-  const handleSentMessageToServer = () => {
+  console.log(content_input);
+  console.log(selectedFile);
+  console.log(instancePayload);
+
+  async function handleOnEnter() {
+    instancePayload = {
+      ...instancePayload,
+      content: selectedFile ? await uploadImage(selectedFile) : content_input,
+      content_type: selectedFile ? "file" : "text"
+    }
     socketResult.emit(instancePayload);
-  }
-  function handleOnEnter(text) {
-    handleSentMessageToServer();
     dispatch(
-      sendMessageApi(
-        instancePayload,
-      )
+      sendMessageApi(instancePayload)
     );
+    setContent("");
+    setSelectedFile(null);
   }
-  function handleChatClick() {
-    handleSentMessageToServer();
+  async function handleChatClick() {
+    instancePayload = {
+      ...instancePayload,
+      content: selectedFile ? await uploadImage(selectedFile) : content_input,
+      content_type: selectedFile ? "file" : "text"
+    }
+    socketResult.emit(instancePayload);
     dispatch(
-      sendMessageApi(
-        instancePayload,
-      )
+      sendMessageApi(instancePayload)
     );
-    setText("");
+    setContent("");
+    setSelectedFile(null);
   }
   return (
     <>
       <div className="search-cont send-message">
         <InputEmoji
-          value={text}
-          onChange={setText}
+          value={content_input}
+          onChange={setContent}
           cleanOnEnter
           onEnter={handleOnEnter}
           placeholder="Type a message"
         />
-        <ImageIcon />
-        <AttachFileIcon />
       </div>
-      <ImageUpload />
+      <ImageUpload
+        setContent_type={setContent_type}
+        selectedFile={selectedFile}
+        setSelectedFile={setSelectedFile}
+        progress={progress}
+      />
       <ColorButton
         onClick={handleChatClick}
         variant="contained"

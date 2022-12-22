@@ -2,9 +2,15 @@ import "./miniComponent.scss"
 import { useEffect, useRef, useState } from "react"
 import { AttachFile } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
+import { Box, LinearProgress } from "@mui/material";
 
-export const ImageUpload = () => {
-    const [selectedFile, setSelectedFile] = useState();
+export const ImageUpload = ({
+    setContent_type,
+    setSelectedFile,
+    selectedFile,
+    progress
+}) => {
+
     const [preview, setPreview] = useState();
     const uploadButton = useRef();
 
@@ -14,23 +20,23 @@ export const ImageUpload = () => {
             setPreview(undefined);
             return;
         }
-
         const objectUrl = URL.createObjectURL(selectedFile);
         setPreview(objectUrl);
         // free memory when ever this component is unmounted
         return () => URL.revokeObjectURL(objectUrl)
     }, [selectedFile])
 
+
     const onSelectFile = e => {
         if (!e || !e?.target.files || e?.target.files.length === 0) {
-            setSelectedFile(undefined)
-            return
+            setSelectedFile(undefined);
+            setContent_type(undefined);
+            return;
         }
-        // I've kept this example simple by using the first image instead of multiple
+        setContent_type("file");
         setSelectedFile(e.target.files[0])
     }
 
-    console.log(selectedFile);
 
     return (
         <div>
@@ -48,6 +54,12 @@ export const ImageUpload = () => {
                         className="preview_image"
                         src={preview}
                     />
+                    <LinearProgress
+                        sx={{
+
+                        }}
+                        className="progress_bar"
+                        variant="determinate" value={progress} />
                     <CloseIcon
                         onClick={() => onSelectFile(undefined)}
                         className="preview_close"
