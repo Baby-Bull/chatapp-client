@@ -6,6 +6,8 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styled from "@emotion/styled";
 import SendIcon from "@mui/icons-material/Send";
 import InputEmoji from "react-input-emoji";
+import ImageIcon from '@mui/icons-material/Image';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import React, { createRef, useCallback, useEffect, useState } from "react";
 import { ChatlogicStyling, isSameSender } from "./ChatstyleLogic";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,8 +50,9 @@ export const ChattingPage = () => {
     }
     webSocket.on("personal_message_from_server", handleMessage);
 
-    return (() => {
-    })
+    return () => {
+      webSocket.off("personal_message_from_server", handleMessage);
+    }
   }, []);
 
   useEffect(() => {
@@ -87,7 +90,7 @@ export const ChattingPage = () => {
       <div className="top-header">
         <div className="user-header">
           <Avatar src={type === "group" ? profile_picture : "P"} />
-          <p className="user-name">{type === "group" ? chatroom_title : "username"}</p>
+          <p className="user-name">{type === "group" ? chatroom_title : user?.username}</p>
         </div>
         <div>
           <div className="user-fet">
@@ -103,11 +106,11 @@ export const ChattingPage = () => {
           <div
             key={index}
             className={
-              el.sender_id != user._id ? "rihgtuser-chat" : "leftuser-chat"
+              el.sender_id !== user._id ? "rihgtuser-chat" : "leftuser-chat"
             }
           >
             <div
-              className={el.sender_id != user._id ? "right-avt" : "left-avt"}
+              className={el.sender_id !== user._id ? "right-avt" : "left-avt"}
             >
               <div className={ChatlogicStyling(el.sender_id, user._id)}>
                 <p>{el.content}</p>
@@ -197,6 +200,8 @@ function InputContWithEmog({ _sender_id, id }) {
           onEnter={handleOnEnter}
           placeholder="Type a message"
         />
+        <ImageIcon />
+        <AttachFileIcon />
       </div>
       <ImageUpload />
       <ColorButton

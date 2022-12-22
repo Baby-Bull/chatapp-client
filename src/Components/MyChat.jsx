@@ -145,6 +145,8 @@ const ChatUserComp = ({
   _id,
   index
 }) => {
+  const { user } = useSelector((store) => store.user);
+  const { chatting } = useSelector((store) => store.chatting);
   const dispatch = useDispatch();
   const handleSelectChat = () => {
     dispatch(
@@ -162,8 +164,7 @@ const ChatUserComp = ({
   return (
     <div
       onClick={handleSelectChat}
-      //className={chattingwith == _id ? "user selectUser" : "user"}
-      className="user selectUser"
+      className={chatting?._id == _id ? "user selectUser" : "user"}
     >
       <div className="history-cont">
         {(type === "group") ? (
@@ -176,8 +177,7 @@ const ChatUserComp = ({
           {(type === "group") ? (
             <p className="name">{chatroom_title || "No Name"}</p>
           ) : (
-            // <p className="name">{users.find((el) => el._id != id)?.name}</p>
-            <p className="name">Group 1-112</p>
+            <p className="name">{members.find((el) => el._id != user?._id)?.username}</p>
           )}
           <p className="chat">
             {lastest_message
@@ -198,7 +198,7 @@ const ChatUserComp = ({
         ) : (
           ""
         )} */}
-        {/* <p className="unseen-chat">5</p> */}
+        <p className="unseen-chat">5</p>
       </div>
     </div>
   );
