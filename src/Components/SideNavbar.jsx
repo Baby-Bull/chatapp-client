@@ -12,14 +12,21 @@ import styled from "@emotion/styled";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import CustomizedDialogs from "./GroupMode";
 import { logout } from "./Redux/Auth/action";
+import { useState } from "react";
+import ProfileUserPanel from "./MiniComponents/ProfileUserPanel";
 export default function SideNavbar() {
   const { user, loading, error } = useSelector((store) => store.user);
   const dispatch = useDispatch();
 
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="side-nav">
       <div>
-        <Avatar src={user.pic} />
+        <Avatar
+          onClick={() => { setOpen(true); console.log("dadsd"); }}
+          src={user.pic}
+        />
       </div>
       <div className="mid-icon">
         <LightTooltip title="Profile" placement="top">
@@ -45,6 +52,11 @@ export default function SideNavbar() {
         </LightTooltip>
         <LogoutIcon onClick={() => logout()} />
       </div>
+
+      <ProfileUserPanel
+        open={open}
+        setOpen={setOpen}
+      />
     </div >
   );
 }

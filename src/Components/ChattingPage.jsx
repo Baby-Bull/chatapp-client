@@ -6,8 +6,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styled from "@emotion/styled";
 import SendIcon from "@mui/icons-material/Send";
 import InputEmoji from "react-input-emoji";
-import CircularProgress from '@mui/material/CircularProgress';
-import React, { createRef, useCallback, useEffect, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import { ChatlogicStyling, isSameSender } from "./ChatstyleLogic";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentMessages, sendMessageApi } from "./Redux/Chatting/action";
@@ -15,14 +14,12 @@ import { sendMessage } from "./Redux/Chatting/action";
 import { addUnseenmsg } from "./Redux/Notification/action";
 import webSocket from "../Utils/socket";
 
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { storage } from "../Utils/firebase";
-
 import socketResult from "../Utils/socket";
 import dayjs from "dayjs";
-import { ImageUpload } from "./MiniComponents/ImageUpload";
+import { FileUpload } from "./MiniComponents/FileUpload";
 import CallingSentPanel from "./MiniComponents/CallingSentPanel";
 import CallingReceivedPanel from "./MiniComponents/CallingReceivedPanel";
+import { UploadFileToFirebase } from "../Helpers/UploadFileToFirebase";
 
 var socket, currentChattingWith;
 const ColorButton = styled(Button)(() => ({
@@ -170,6 +167,7 @@ function InputContWithEmog({ _sender_id, id }) {
   const [progress, setProgress] = useState(0);
 
   const dispatch = useDispatch();
+
   let instancePayload = {
     message_type: "personal_message_from_client",
     content: content_input,
@@ -178,53 +176,13 @@ function InputContWithEmog({ _sender_id, id }) {
     sender_id: _sender_id,
     createdAt: dayjs()
   }
-  const uploadImage = (file) => {
-    return new Promise((resolve, reject) => {
-      if (!file) return;
-      const storageRef = ref(storage, `images/${file.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on("state_changed",
-        (snapshot) => {
-          const prog = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          setProgress(prog);
-        },
-        (error) => {
-          reject(error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref)
-            .then((downloadURL) => {
-              resolve(downloadURL);
-            })
-        }
-      )
-    })
-  }
 
-  console.log(content_input);
-  console.log(selectedFile);
-  console.log(instancePayload);
-
-  async function handleOnEnter() {
+  async function handleSendMessage() {
+    const tempRes = await UploadFileToFirebase(selectedFile);
+    setProgress(selectedFile);
     instancePayload = {
       ...instancePayload,
-      content: selectedFile ? await uploadImage(selectedFile) : content_input,
-      content_type: selectedFile ? "file" : "text"
-    }
-    socketResult.emit(instancePayload);
-    dispatch(
-      sendMessageApi(instancePayload)
-    );
-    setContent("");
-    setSelectedFile(null);
-  }
-  async function handleChatClick() {
-    instancePayload = {
-      ...instancePayload,
-      content: selectedFile ? await uploadImage(selectedFile) : content_input,
-      content_type: selectedFile ? "file" : "text"
+      content: selectedFile ? tempRes?.url : content_input,
     }
     socketResult.emit(instancePayload);
     dispatch(
@@ -240,18 +198,18 @@ function InputContWithEmog({ _sender_id, id }) {
           value={content_input}
           onChange={setContent}
           cleanOnEnter
-          onEnter={handleOnEnter}
+          onEnter={handleSendMessage}
           placeholder="Type a message"
         />
       </div>
-      <ImageUpload
+      <FileUpload
         setContent_type={setContent_type}
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
         progress={progress}
       />
       <ColorButton
-        onClick={handleChatClick}
+        onClick={handleSendMessage}
         variant="contained"
         endIcon={<SendIcon />}
       ></ColorButton>
