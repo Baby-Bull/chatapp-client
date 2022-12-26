@@ -4,6 +4,7 @@ import {
   AUTH_USER,
   LOGOUT,
   UPLOAD_PIC,
+  UPDATE_USER
 } from "./action";
 
 const user = JSON.parse(localStorage.getItem("userInfo")) || {
@@ -30,7 +31,15 @@ export const authReducer = (store = initState, { type, payload }) => {
     case UPLOAD_PIC:
       return {
         ...store,
-        user: { ...store.user, pic: payload },
+        user: { ...store.user, avatar: payload },
+        loading: false,
+        error: false,
+      };
+
+    case UPDATE_USER:
+      return {
+        ...store,
+        user: payload,
         loading: false,
         error: false,
       };

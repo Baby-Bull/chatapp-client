@@ -11,9 +11,15 @@ export const login = async (
     }
     try {
         const res = await api.post(`/auth/login`, params)
-        return res.data;
+        return {
+            statusCode: 200,
+            data: res.data
+        };
     } catch (error) {
-        return "login failure"
+        return {
+            statusCode: 500,
+            message: "login failure"
+        }
     }
 };
 
@@ -27,6 +33,21 @@ export const register = async (params: any) => {
     } catch (error) {
         return {
             statusCode: 500,
+            message: "exist an error"
+        }
+    }
+}
+
+export const updateUser = async (userId: string, params: any) => {
+    try {
+        const res = await api.patch(`/users/${userId}`, params);
+        return {
+            statusCode: 200,
+            data: res?.data
+        }
+    } catch (error) {
+        return {
+            satusCode: 500,
             message: "exist an error"
         }
     }

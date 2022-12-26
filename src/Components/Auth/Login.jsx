@@ -9,6 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
 import { authRegister } from "../Redux/Auth/action";
 import { login } from "../../Services/auth";
+import { toast } from "react-toastify";
 import { setRefreshToken, setUserToken } from "../../Utils/storage";
 export const LoginComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
@@ -24,12 +25,14 @@ export const LoginComp = () => {
 
   const handleSubmit = async () => {
     const res = await login(regData.email, regData.password);
-    setUserToken(res?.token?.access?.token, res?.token?.access?.expires)
-    setRefreshToken(res?.token?.refresh?.token)
-    dispatch(authRegister(res));
+    console.log(res);
+    toast.error("ERROR Notification");
+    // setUserToken(res?.token?.access?.token, res?.token?.access?.expires)
+    // setRefreshToken(res?.token?.refresh?.token)
+    // dispatch(authRegister(res));
   };
 
-  if (user._id) {
+  if (user && user._id) {
     return <Navigate to={"/"} />;
   }
   return (

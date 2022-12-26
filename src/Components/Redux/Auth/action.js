@@ -1,10 +1,14 @@
+import { updateUser } from "../../../Services/auth";
+
 export const AUTH_USER = "AUTH_USER";
 export const AUTH_LOADING = "AUTH_LOADING";
 export const AUTH_ERROR = "AUTH_ERROR";
 export const LOGOUT = "LOGOUT";
 export const UPLOAD_PIC = "UPLOAD_PIC";
+export const UPDATE_USER = "UPDATE_USER";
 
 export const actionPic = (payload) => ({ type: UPLOAD_PIC, payload });
+export const actionUser = (payload) => ({ type: UPDATE_USER, payload });
 export const authUser = (payload) => ({ type: AUTH_USER, payload });
 export const authLoading = (payload) => ({ type: AUTH_LOADING, payload });
 export const authError = (payload) => ({ type: AUTH_ERROR, payload });
@@ -23,21 +27,23 @@ export const authRegister = (res) => async (dispatch) => {
   }
 };
 
-export const uploadPic = (pic) => async (dispatch) => {
+export const uploadPic = (userId, picUrl) => async (dispatch) => {
   dispatch(authLoading(true));
   try {
-    const url = `https://api.cloudinary.com/v1_1/yasherosion/image/upload`;
-    const profile = new FormData();
-    profile.append("file", pic);
-    profile.append("upload_preset", "chat-app");
-    profile.append("cloud_name", "yasherosion");
-    let res = await fetch(url, {
-      method: "POST",
-      body: profile,
-    });
-    let data = await res.json();
-    console.log(data);
-    dispatch(actionPic(data.secure_url));
+    dispatch(actionPic(picUrl));
+  } catch (error) {
+    dispatch(authLoading(false));
+    dispatch(authError(true));
+    console.log(error.message);
+  }
+};
+
+export const updateUserAction = (userId, payload) => async (dispatch) => {
+  dispatch(authLoading(true));
+  try {
+    const result = await updateUser(userId, payload);
+    console.log(result);
+    dispatch(actionUser(payload));
   } catch (error) {
     dispatch(authLoading(false));
     dispatch(authError(true));

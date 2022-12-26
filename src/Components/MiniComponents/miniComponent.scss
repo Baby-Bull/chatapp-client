@@ -237,6 +237,7 @@ $card-width: 300px;
   max-width: $card-width;
   margin: 0 auto;
   position: relative;
+  outline: none;
 }
 
 .outer-div {
@@ -310,20 +311,16 @@ $card-width: 300px;
   }
 }
 
-.front__face-photo {
+.face-photo {
   position: relative;
   top: -60px;
-  height: 120px;
-  width: 120px;
+  height: 120px !important;
+  width: 120px !important;
   margin: 0 auto;
   border-radius: 50%;
   border: 5px solid $white;
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/156905/profile/profile-512.jpg?1530296477") no-repeat;
   background-size: contain;
   overflow: hidden;
-  /* backface-visibility: hidden;
-  transition: all 0.6s cubic-bezier(0.8, -0.4, 0.2, 1.7);
-  z-index: 3;*/
 }
 
 .front__text {
@@ -350,6 +347,21 @@ $card-width: 300px;
     letter-spacing: 0.4px;
     font-weight: 400;
     font-family: "Montserrat", sans-serif;
+  }
+
+  .online_status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    .online_dot {
+      height: 0.5em;
+      width: 0.5em;
+      border-radius: 50%;
+      background: green;
+      margin-right: 1em;
+    }
   }
 
   .front-icons {
@@ -393,6 +405,24 @@ $card-width: 300px;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+
+  .add_image_button {
+    position: absolute;
+    right: 30%;
+    top: 41%;
+    border: 3px white solid;
+    padding: 0.1em;
+    background-color: gray;
+
+    &:hover {
+      background-color: rgb(102, 102, 102);
+    }
+  }
+
+  .front__text_edit {
+    display: -ms-inline-grid;
+    display: inline-grid;
+  }
 
   .text-save {
     position: relative;

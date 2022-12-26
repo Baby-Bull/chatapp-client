@@ -34,12 +34,12 @@ export const HomeComp = () => {
   );
 };
 
-const MessageStarter = ({ pic, name }) => {
+const MessageStarter = ({ avatar, name }) => {
   return (
     <div className="chattingpage start-msg">
       <div>
         <Avatar
-          src={pic}
+          src={avatar}
           sx={{ width: 70, height: 70 }}
         />
         <h3>Welcome, {name}</h3>

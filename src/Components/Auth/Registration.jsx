@@ -11,7 +11,7 @@ import { register } from "../../Services/auth";
 export const RegisterComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const [regData, setRegData] = useState({
-    pic: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+    avatar: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     isAdmin: false,
     name: "",
     email: "",
@@ -52,7 +52,7 @@ export const RegisterComp = () => {
           <div className="profile-pic">
             <input onChange={handleInputFile} type="file" name="" id="file" />
             <label htmlFor="file" id="uploadBtn">
-              <img id="photo" src={user.pic ? user.pic : avatar} />
+              <img id="photo" src={user.avatar ? user.avatar : avatar} />
             </label>
           </div>
           <p className="profile-text">Choose Profile</p>

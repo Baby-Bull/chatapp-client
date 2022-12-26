@@ -24,8 +24,8 @@ export default function SideNavbar() {
     <div className="side-nav">
       <div>
         <Avatar
-          onClick={() => { setOpen(true); console.log("dadsd"); }}
-          src={user.pic}
+          onClick={() => { setOpen(true) }}
+          src={user.avatar}
         />
       </div>
       <div className="mid-icon">
