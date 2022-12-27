@@ -2,7 +2,6 @@ import { Avatar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
-import socketResult from "../Utils/socket";
 import { ChattingPage } from "./ChattingPage";
 import { MyChat } from "./MyChat";
 import SideNavbar from "./SideNavbar";
@@ -21,7 +20,7 @@ export const HomeComp = () => {
   // }, [])
 
   if (!user._id) {
-    return <Navigate to="/register" />;
+    return <Navigate to="/login" />;
   }
 
   return (

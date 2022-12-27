@@ -37,3 +37,39 @@
     max-height: 10em;
     object-fit: contain;
 }
+
+.chattingpage {
+    position: relative;
+    background-color: white;
+    width: 70%;
+    box-shadow: 0 2px 4px rgb(15 34 58 / 12%);
+    height: 100vh;
+
+    .live-chat {
+        /* border: 2px solid red; */
+        padding: 20px;
+        max-height: 85%;
+        height: 85%;
+        box-sizing: border-box;
+        overflow-y: hidden;
+        overflow: scroll;
+
+        &::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #c4ccdbb2;
+            border-radius: 10px;
+        }
+    }
+
+    .sender-cont {
+        display: flex;
+        border-top: 1px solid #f0eff5;
+        align-items: center;
+        position: absolute;
+        width: 100%;
+        bottom: 1em;
+    }
+}

@@ -13,7 +13,7 @@ export const RegisterComp = () => {
   const [regData, setRegData] = useState({
     avatar: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     isAdmin: false,
-    name: "",
+    username: "",
     email: "",
     password: "",
   });
@@ -37,7 +37,6 @@ export const RegisterComp = () => {
     //if (user.pic) regData["pic"] = user.pic;
     console.log(res);
     if (res?.statusCode === 200) {
-      console.log("pass register");
       return <Navigate to={"/login"} />;
     }
   };
@@ -59,7 +58,7 @@ export const RegisterComp = () => {
         </div>
         <div className="details-cont">
           <p>Name</p>
-          <input onChange={handleChange} name="name" className="inputcom" />
+          <input onChange={handleChange} name="username" className="inputcom" />
 
           <p>Email</p>
           <input onChange={handleChange} name="email" className="inputcom" />

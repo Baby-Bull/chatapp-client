@@ -16,10 +16,18 @@ export const login = async (
             data: res.data
         };
     } catch (error) {
-        return {
-            statusCode: 500,
-            message: "login failure"
-        }
+        console.log(error.response.status);
+        if (error.response.status === 404)
+            return {
+                statusCode: 404,
+                message: "User not found"
+            }
+        else if (error.response.status === 401)
+            return {
+                statusCode: 401,
+                message: "Wrong password"
+            }
+
     }
 };
 
@@ -50,5 +58,14 @@ export const updateUser = async (userId: string, params: any) => {
             satusCode: 500,
             message: "exist an error"
         }
+    }
+}
+
+export const getAllUsersByName = async (params: any) => {
+    try {
+        const res = await api.post(`/users`, params);
+        return res?.data;
+    } catch (error) {
+        return error;
     }
 }

@@ -1,21 +1,20 @@
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
-import { Avatar, Badge } from "@mui/material";
+import { Avatar, Badge, Grid, List, ListItem, ListItemButton } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { makeSearchApi } from "./Redux/Searching/action";
 import { useSelector } from "react-redux";
 import { accessChat, makeRecentChatApi } from "./Redux/RecentChat/action";
 import { selectChat } from "./Redux/Chatting/action";
 import { removeSeenMsg } from "./Redux/Notification/action";
+import { getAllUsersByName } from "../Services/auth";
+import { Box } from "@mui/system";
 
 export const MyChat = () => {
-  const [search, setSearch] = useState(false);
-  const { search_result, loading, error } = useSelector(
-    (store) => store.search
-  );
+  const dispatch = useDispatch();
   const { recent_chat, loading: chat_loading } = useSelector(
     (store) => store.recentChat
   );
@@ -25,25 +24,72 @@ export const MyChat = () => {
   const { notification, unseenmsg } = useSelector(
     (store) => store.notification
   );
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (token) dispatch(makeRecentChatApi(token, user?._id));
-  }, [user]);
-  const ref = useRef();
-  const handleQuery = (e) => {
-    let id;
-    return function (e) {
-      if (!e.target.value) {
-        setSearch(false);
-        return;
-      }
-      if (ref.current) clearTimeout(ref.current);
-      setSearch(true);
-      ref.current = setTimeout(() => {
-        dispatch(makeSearchApi(e.target.value));
-      }, 1000);
+  const [resultChatroom, setResultChatroom] = useState([])
+
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const { refetch: fetchChat, data: chatrooms } = useQuery({
+  //   queryKey: searchQuery,
+  //   queryFn: async () => {
+  //     const resTemp = await getAllUsersByName({ string: searchQuery });
+  //     setResultChatroom(resTemp);
+  //   }
+  // })
+  // useEffect(() => {
+  //   fetchChat();
+  // }, [searchQuery])
+
+  const debounce = (fn) => {
+    let time;
+    return (...args) => {
+      const context = undefined;
+      if (time) clearTimeout(time);
+      time = setTimeout(() => {
+        time = null;
+        fn.apply(context, args);
+      }, 500);
     };
   };
+
+  const handleChangeInput = async (value) => {
+    const resTemp = await getAllUsersByName({ string: value });
+    (value === "") ? setResultChatroom([]) : setResultChatroom(resTemp);
+  }
+
+  const optimizedFn = useCallback(
+    debounce(handleChangeInput),
+    [],
+  )
+
+  useEffect(() => {
+    dispatch(makeRecentChatApi(user?._id));
+  }, [user]);
+
+  // const ref = useRef();
+
+  // const handleQuery = (e) => {
+  //   let id;
+  //   return function (e) {
+  //     if (!e.target.value) {
+  //       setSearch(false);
+  //       return;
+  //     }
+  //     if (ref.current) clearTimeout(ref.current);
+  //     setSearch(true);
+  //     ref.current = setTimeout(() => {
+  //       dispatch(makeSearchApi(e.target.value));
+  //     }, 1000);
+  //   };
+  // };
+
+  const submitCreateNewChat = (friend) => {
+    const payload = {
+      lastest_message: "Chatroom has been created",
+      members: [friend, user],
+      type: "personal"
+    };
+    dispatch(accessChat(payload, recent_chat));
+  }
+
 
   return (
     <div className="mychat-cont">
@@ -56,19 +102,56 @@ export const MyChat = () => {
           </Badge>
           {/* <AddIcon /> */}
         </div>
-        <div className="search-cont">
-          <SearchIcon />
-          <input
-            onChange={handleQuery()}
-            type="text"
-            placeholder="Search users"
-          />
+        <div style={{ position: "relative" }}>
+          <div className="search-cont">
+            <SearchIcon />
+            <input
+              onChange={(e) => {
+                optimizedFn(e.target.value);
+              }}
+              type="text"
+              placeholder="Search users"
+            />
+          </div>
+          {resultChatroom?.length ?
+            <Box
+              sx={{
+                position: "absolute",
+                width: '100%',
+                height: "fit-content",
+                maxHeight: "40em",
+                bgcolor: '#ebebeb',
+                overflowY: "auto"
+              }}
+            >
+              <List>
+                {resultChatroom.map((u) => (
+                  <ListItem onClick={() => submitCreateNewChat(u)}>
+                    <ListItemButton>
+                      <Grid container spacing={2}>
+                        <Grid item xs={4}>
+                          <Avatar
+                            src={u?.avatar}
+                          />
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Typography>
+                            {u?.username}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </ListItemButton>
+                  </ListItem>
+                ))
+                }
+              </List>
+            </Box> : null}
         </div>
       </div>
       <div className="recent-chat">
         <p className="Recent">Recent</p>
         <div className="recent-user">
-          {search
+          {/* {search
             ? search_result.map((el) => (
               <SearchUserComp
                 key={el._id}
@@ -78,16 +161,16 @@ export const MyChat = () => {
                 setSearch={setSearch}
               />
             ))
-            : !chat_loading &&
-            recent_chat.map((el, index) => (
-              <ChatUserComp
-                // key={el._id}
-                index={index}
-                {...el}
-              // chattingwith={chatting._id}
-              // id={user._id}
-              />
-            ))}
+            : !chat_loading && */}
+          {recent_chat.map((el, index) => (
+            <ChatUserComp
+              // key={el._id}
+              index={index}
+              {...el}
+            // chattingwith={chatting._id}
+            // id={user._id}
+            />
+          ))}
         </div>
       </div>
     </div>
@@ -136,6 +219,8 @@ export default function Notificationcomp() {
     </div>
   );
 }
+
+
 const ChatUserComp = ({
   type,
   chatroom_title,

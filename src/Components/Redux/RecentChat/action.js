@@ -2,9 +2,10 @@ export const RECENT_LOADING = "RECENT_LOADING";
 export const RECENT_ERROR = "RECENT_ERROR";
 export const ADD_RECENT_CHAT = "ADD_RECENT_CHAT";
 export const NEW_CREATED_CHAT = "NEW_CREATED_CHAT";
-import { getAllChatroom } from "../../../Services/chat";
+import { CompareArrayMembers, GetArrayIdFromArrayObject } from "../../../Helpers/HelperFunctions";
+import { createNewChatroom, getAllChatroom } from "../../../Services/chat";
 import { addMessage, selectChat } from "../Chatting/action";
-export const recentLoding = (payload) => ({ type: RECENT_LOADING, payload });
+export const recentLoading = (payload) => ({ type: RECENT_LOADING, payload });
 export const recentError = (payload) => ({ type: RECENT_ERROR, payload });
 export const recentChatResult = (payload) => ({
   type: ADD_RECENT_CHAT,
@@ -15,15 +16,14 @@ export const newCreatedChat = (payload) => ({
   payload,
 });
 
-export const makeRecentChatApi = (token, user_id) => async (dispatch) => {
-  recentLoding(true);
+export const makeRecentChatApi = (user_id) => async (dispatch) => {
+  recentLoading(true);
   try {
     let res = await getAllChatroom(user_id);
     dispatch(recentChatResult(res));
     //dispatch(addMessage(res[0].messages));
   } catch (err) {
     dispatch(recentError(true));
-    console.log(err.message);
   }
 };
 
@@ -47,43 +47,39 @@ export const makeNewGroup = (group_data, token) => async (dispatch) => {
   }
 };
 
-export const accessChat = (userId, token, recentchat) => async (dispatch) => {
-  dispatch(recentLoding(true));
-  const url = `http://localhost:8000/chat`;
+export const accessChat = (payload, recentchat) => async (dispatch) => {
+  dispatch(recentLoading(true));
+  console.log();
   try {
-    let res = await fetch(url, {
-      method: "post",
-      body: JSON.stringify({ userId }),
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    let data = await res.json();
-    if (!recentchat.find((el) => el._id === data._id)) {
-      dispatch(newCreatedChat(data));
+    const data = recentchat.find((el) => CompareArrayMembers(GetArrayIdFromArrayObject(el?.members), GetArrayIdFromArrayObject(payload?.members)));
+    if (!data) {
+      let res = await createNewChatroom(payload);
+      dispatch(newCreatedChat(res));
       dispatch(
         selectChat({
-
-          isGroupChat: data.isGroupChat,
+          type: res?.type,
+          chatroom_title: res?.chatroom_title,
+          members: res?.members,
+          profile_picture: res?.profile_picture,
+          _id: res._id,
           index: 0,
-          user: data.users.find((el) => el._id == userId),
-          _id: data._id,
-          chatName: data.chatName,
         })
       );
       return;
     }
-    dispatch(recentLoding(false));
-    dispatch(
-      selectChat({
-        isGroupChat: data.isGroupChat,
-        index: 0,
-        user: data.users.find((el) => el._id == userId),
-        _id: data._id,
-        chatName: data.chatName,
-      })
-    );
+    else {
+      dispatch(
+        selectChat({
+          type: data?.type,
+          chatroom_title: data?.chatroom_title,
+          members: data?.members,
+          profile_picture: data?.profile_picture,
+          _id: data._id,
+          index: 0,
+        })
+      );
+    }
+    dispatch(recentLoading(false));
   } catch (err) {
     dispatch(recentError(true));
     console.log(err.message);

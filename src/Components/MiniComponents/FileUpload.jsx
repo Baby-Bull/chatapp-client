@@ -56,6 +56,7 @@ export const FileUpload = ({
                 setContent_type("audio");
                 break;
             default:
+                setContent_type("text")
                 break;
         }
         setSelectedFile(e.target.files[0]);

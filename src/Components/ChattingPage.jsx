@@ -14,7 +14,6 @@ import { sendMessage } from "./Redux/Chatting/action";
 import { addUnseenmsg } from "./Redux/Notification/action";
 import webSocket from "../Utils/socket";
 
-import socketResult from "../Utils/socket";
 import dayjs from "dayjs";
 import { FileUpload } from "./MiniComponents/FileUpload";
 import CallingSentPanel from "./MiniComponents/CallingSentPanel";
@@ -51,11 +50,14 @@ export const ChattingPage = () => {
     messages
   } = useSelector((store) => store.chatting);
 
+
+  console.log(messages);
+
+
   const scrolldiv = createRef();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const abortController = new AbortController();
     const handleMessage = (rev_message) => {
       dispatch(sendMessage(rev_message))
       // InputContWithEmog(user?._id, _id)
@@ -68,7 +70,6 @@ export const ChattingPage = () => {
   }, []);
 
   useEffect(() => {
-    const abortController = new AbortController();
     //_id is of selected chat so that user can join same chat room
     if (!_id) return;
     dispatch(fetchCurrentMessages(_id, token, socket));
@@ -76,7 +77,6 @@ export const ChattingPage = () => {
   }, [_id]);
 
   useEffect(() => {
-    const abortController = new AbortController();
     const scrollToBottom = (node) => {
       node.scrollTop = node.scrollHeight;
     };
@@ -138,7 +138,7 @@ export const ChattingPage = () => {
               {isSameSender(messages, index) ? (
                 <Avatar
                   //src={el.sender_id != user._id ? el.sender.pic : user.pic}
-                  src={""}
+                  src={user?.avatar}
                 />
               ) : (
                 <div className="blank-div"></div>
@@ -171,24 +171,28 @@ function InputContWithEmog({ _sender_id, id }) {
   let instancePayload = {
     message_type: "personal_message_from_client",
     content: content_input,
-    content_type: content_type, // to-do modify attribute to match with any type of input (file, image, text ...)
+    content_type: content_type || "text", // to-do modify attribute to match with any type of input (file, image, text ...)
     chatroom_id: id,
     sender_id: _sender_id,
     createdAt: dayjs()
   }
 
   async function handleSendMessage() {
-    const tempRes = await UploadFileToFirebase(selectedFile);
-    setProgress(selectedFile);
+    const tempRes = selectedFile ? await UploadFileToFirebase(selectedFile) : null;
+    setSelectedFile(selectedFile);
+    setProgress(tempRes?.progress)
     instancePayload = {
       ...instancePayload,
       content: selectedFile ? tempRes?.url : content_input,
     }
-    socketResult.emit(instancePayload);
+    console.log(instancePayload);
+    webSocket.emit(instancePayload);
     dispatch(
       sendMessageApi(instancePayload)
     );
     setContent("");
+    setContent_type("text");
+    setProgress(0);
     setSelectedFile(null);
   }
   return (

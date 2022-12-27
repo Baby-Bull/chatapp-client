@@ -25,11 +25,19 @@ export const LoginComp = () => {
 
   const handleSubmit = async () => {
     const res = await login(regData.email, regData.password);
-    console.log(res);
-    toast.error("ERROR Notification");
-    // setUserToken(res?.token?.access?.token, res?.token?.access?.expires)
-    // setRefreshToken(res?.token?.refresh?.token)
-    // dispatch(authRegister(res));
+    const resSuccess = res?.data;
+    if (res?.statusCode === 404)
+      toast.error("Email doesn't exist.");
+    else if (res?.status === 401)
+      toast.error("Wrong password.");
+    else if (res.statusCode === 200) {
+      toast.success("Login successful");
+      setUserToken(resSuccess?.token?.access?.token, resSuccess?.token?.access?.expires)
+      setRefreshToken(resSuccess?.token?.refresh?.token)
+      dispatch(authRegister(resSuccess));
+    }
+    else
+      toast.error("Exist an error.")
   };
 
   if (user && user._id) {
