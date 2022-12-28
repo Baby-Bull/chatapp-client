@@ -49,9 +49,9 @@ export const makeNewGroup = (group_data, token) => async (dispatch) => {
 
 export const accessChat = (payload, recentchat) => async (dispatch) => {
   dispatch(recentLoading(true));
-  console.log();
   try {
     const data = recentchat.find((el) => CompareArrayMembers(GetArrayIdFromArrayObject(el?.members), GetArrayIdFromArrayObject(payload?.members)));
+    console.log(data);
     if (!data) {
       let res = await createNewChatroom(payload);
       dispatch(newCreatedChat(res));

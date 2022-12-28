@@ -20,9 +20,7 @@ export default function ProfileUserPanel({ open, setOpen }) {
         username: "",
         email: ""
     })
-    
-    console.log(user);
-    console.log(formUpdate);
+
     const changeFormValue = (e) => {
         setFormUpdate({ ...formUpdate, [e.target.name]: e.target.value });
     }
@@ -100,6 +98,7 @@ export default function ProfileUserPanel({ open, setOpen }) {
                                 variant="standard"
                                 defaultValue={user?.username}
                                 name="username"
+                                value={formUpdate?.username}
                                 onChange={changeFormValue}
                             />
                             <TextField
@@ -112,6 +111,7 @@ export default function ProfileUserPanel({ open, setOpen }) {
                                 variant="standard"
                                 defaultValue={user?.email}
                                 onChange={changeFormValue}
+                                value={formUpdate?.email}
                             />
                             <span
                                 onClick={handleSaveUserUpdated}

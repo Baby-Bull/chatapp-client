@@ -5,7 +5,7 @@ export async function UploadFileToFirebase(reqFile) {
     let progress = 0;
     let url = "";
 
-    const uploadImage = (file) => {
+    const uploadImage = (file: any) => {
         return new Promise((resolve, reject) => {
             if (!file) return;
             const storageRef = ref(storage, `images/${file.name}`);

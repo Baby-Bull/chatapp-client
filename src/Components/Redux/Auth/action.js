@@ -42,7 +42,6 @@ export const updateUserAction = (userId, payload) => async (dispatch) => {
   dispatch(authLoading(true));
   try {
     const result = await updateUser(userId, payload);
-    console.log(result);
     dispatch(actionUser(payload));
   } catch (error) {
     dispatch(authLoading(false));

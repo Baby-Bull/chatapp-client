@@ -16,7 +16,6 @@ export const login = async (
             data: res.data
         };
     } catch (error) {
-        console.log(error.response.status);
         if (error.response.status === 404)
             return {
                 statusCode: 404,

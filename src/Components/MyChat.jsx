@@ -87,6 +87,7 @@ export const MyChat = () => {
       members: [friend, user],
       type: "personal"
     };
+    setResultChatroom([])
     dispatch(accessChat(payload, recent_chat));
   }
 

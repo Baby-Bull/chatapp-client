@@ -50,10 +50,6 @@ export const ChattingPage = () => {
     messages
   } = useSelector((store) => store.chatting);
 
-
-  console.log(messages);
-
-
   const scrolldiv = createRef();
   const dispatch = useDispatch();
 
@@ -185,7 +181,6 @@ function InputContWithEmog({ _sender_id, id }) {
       ...instancePayload,
       content: selectedFile ? tempRes?.url : content_input,
     }
-    console.log(instancePayload);
     webSocket.emit(instancePayload);
     dispatch(
       sendMessageApi(instancePayload)
