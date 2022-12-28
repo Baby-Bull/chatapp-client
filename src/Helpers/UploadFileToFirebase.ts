@@ -37,3 +37,10 @@ export async function UploadFileToFirebase(reqFile) {
         url
     }
 }
+
+
+
+export const getFileNameFromURL = (urlFirebase: string) => {
+    const httpsReference = ref(storage, urlFirebase);
+    return httpsReference?.name;
+} 

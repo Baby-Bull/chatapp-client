@@ -7,6 +7,7 @@ import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import AudioFileIcon from '@mui/icons-material/AudioFile';
 import { Box, LinearProgress, Menu, MenuItem } from "@mui/material";
+import { getFileNameFromURL } from "../../Helpers/UploadFileToFirebase";
 
 export const FileUpload = ({
     setContent_type,

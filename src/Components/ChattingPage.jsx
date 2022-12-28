@@ -5,6 +5,7 @@ import VideoCallIcon from "@mui/icons-material/VideoCall";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styled from "@emotion/styled";
 import SendIcon from "@mui/icons-material/Send";
+import DownloadIcon from '@mui/icons-material/Download';
 import InputEmoji from "react-input-emoji";
 import React, { createRef, useEffect, useState } from "react";
 import { ChatlogicStyling, isSameSender } from "./ChatstyleLogic";
@@ -18,7 +19,7 @@ import dayjs from "dayjs";
 import { FileUpload } from "./MiniComponents/FileUpload";
 import CallingSentPanel from "./MiniComponents/CallingSentPanel";
 import CallingReceivedPanel from "./MiniComponents/CallingReceivedPanel";
-import { UploadFileToFirebase } from "../Helpers/UploadFileToFirebase";
+import { getFileNameFromURL, UploadFileToFirebase } from "../Helpers/UploadFileToFirebase";
 
 var socket, currentChattingWith;
 const ColorButton = styled(Button)(() => ({
@@ -117,13 +118,28 @@ export const ChattingPage = () => {
           >
             <div className={el.sender_id !== user._id ? "right-avt" : "left-avt"}>
               <div className={ChatlogicStyling(el.sender_id, user._id)}>
-                {el.content_type === "text" ?
-                  <p>{el.content}</p> :
-                  <embed
-                    className="img_message"
-                    src={el.content}
-                    alt=""
-                  />
+                {
+                  {
+                    "text": <p>{el.content}</p>,
+                    "image": <embed
+                      className="img_message"
+                      src={el.content}
+                      alt=""
+                    />,
+                    "file": <a
+                      style={{ textDecoration: "none" }}
+                      href={el.content}
+                      target="_blank">
+                      <div className="file_message">
+                        <div className="texts">
+                          <span className="first_text">Click to download file</span>
+                          <span className="second_text">{getFileNameFromURL(el?.content)}</span>
+                        </div>
+                        <DownloadIcon className="icon_download" />
+                      </div>
+                    </a>
+                  }
+                  [el.content_type]
                 }
                 <p className="time chat-time">
                   {new Date(el.createdAt).getHours() +
