@@ -54,6 +54,7 @@ export const ChattingPage = () => {
   const scrolldiv = createRef();
   const dispatch = useDispatch();
 
+
   useEffect(() => {
     const handleMessage = (rev_message) => {
       dispatch(sendMessage(rev_message))
@@ -62,7 +63,7 @@ export const ChattingPage = () => {
     webSocket.on("personal_message_from_server", handleMessage);
 
     return () => {
-      webSocket.off("personal_message_from_server", handleMessage);
+      webSocket.off("personal_message_from_server",);
     }
   }, []);
 
@@ -80,16 +81,6 @@ export const ChattingPage = () => {
     scrollToBottom(scrolldiv.current);
   });
 
-  // useEffect(() => {
-  //   // socket.on("message recieved", (newMessage) => {
-  //   //   if (!currentChattingWith || currentChattingWith !== newMessage.chat._id) {
-  //   //     handleNotyfy(newMessage);
-  //   //   } else {
-  //   //     dispatch(sendMessage(newMessage));
-  //   //   }
-  //   // });
-  // }, []);
-
   const handleNotyfy = (newMessage) => {
     dispatch(addUnseenmsg(newMessage));
   };
@@ -104,7 +95,16 @@ export const ChattingPage = () => {
         <div>
           <div className="user-fet">
             <SearchIcon />
-            <CallIcon />
+            <CallIcon
+              onClick={() =>
+                webSocket.emit({
+                  message_type: "call_request_from_client",
+                  chatroom_id: _id,
+                  sender_id: user?._id,
+                  createdAt: dayjs()
+                })
+              }
+            />
             <VideoCallIcon />
             <MoreHorizIcon />
           </div>

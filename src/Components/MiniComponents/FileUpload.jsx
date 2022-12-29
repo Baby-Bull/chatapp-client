@@ -8,6 +8,7 @@ import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import AudioFileIcon from '@mui/icons-material/AudioFile';
 import { Box, LinearProgress, Menu, MenuItem } from "@mui/material";
 import { getFileNameFromURL } from "../../Helpers/UploadFileToFirebase";
+import RecorderPanel from "./RecorderPanel";
 
 export const FileUpload = ({
     setContent_type,
@@ -16,14 +17,13 @@ export const FileUpload = ({
     progress
 }) => {
 
+    const [openRecordPanel, setOpenRecordPanel] = useState(false)
+
     const [preview, setPreview] = useState();
     const uploadImageButton = useRef();
     const uploadFileButton = useRef();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event?.currentTarget);
-    };
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -101,7 +101,7 @@ export const FileUpload = ({
                     onClick={() => uploadFileButton.current.click()}
                 />
                 <KeyboardVoiceIcon
-                    onClick={(e) => handleClick(e)}
+                    onClick={(e) => setAnchorEl(e?.currentTarget)}
                 />
                 <Menu
                     id="long-menu"
@@ -113,7 +113,9 @@ export const FileUpload = ({
                     onClose={handleClose}
                 >
                     <MenuItem onClick={handleClose}>
-                        <RecordVoiceOverIcon />
+                        <RecordVoiceOverIcon
+                            onClick={() => setOpenRecordPanel(true)}
+                        />
                     </MenuItem>
                     <MenuItem onClick={handleClose}>
                         <AudioFileIcon />
@@ -135,6 +137,11 @@ export const FileUpload = ({
                     />
                 </div>
             }
+
+            <RecorderPanel
+                openRecordPanel={openRecordPanel}
+                setOpenRecordPanel={setOpenRecordPanel}
+            />
         </div>
     )
 }

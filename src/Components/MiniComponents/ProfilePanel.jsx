@@ -14,7 +14,7 @@ export default function CallingSentPanel() {
         <ModalCustom
             open={open}
         >
-            <Box className="panel_profile" >
+            <Box className="panel_border panel_profile" >
 
             </Box>
         </ModalCustom>

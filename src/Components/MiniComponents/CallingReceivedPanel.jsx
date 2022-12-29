@@ -13,7 +13,7 @@ export default function CallingReceivedPanel() {
             open={open}
         // onClose={handleClose}
         >
-            <Box className="panel_calling_sent" >
+            <Box className="panel_border panel_calling_sent" >
                 <Box className="info_zone">
                     <Avatar className="avatar_user" />
                     <Typography className="username">Personal 1-112F</Typography>
@@ -22,7 +22,7 @@ export default function CallingReceivedPanel() {
                     style={{ display: "flex" }}
                 >
                     <div className="opt_reject">
-                        <div class="pulse"> <PhoneDisabledIcon className="icon_phone" /> </div>
+                        <div className="pulse"> <PhoneDisabledIcon className="icon_phone" /> </div>
                         <Typography sx={{
                             color: "red",
                             fontSize: "12px"

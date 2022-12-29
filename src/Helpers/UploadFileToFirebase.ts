@@ -9,6 +9,8 @@ export async function UploadFileToFirebase(reqFile) {
         return new Promise((resolve, reject) => {
             if (!file) return;
             const storageRef = ref(storage, `images/${file.name}`);
+            console.log(storageRef);
+            
             const uploadTask = uploadBytesResumable(storageRef, file);
             uploadTask.on("state_changed",
                 (snapshot) => {
