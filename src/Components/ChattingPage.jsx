@@ -17,8 +17,6 @@ import webSocket from "../Utils/socket";
 
 import dayjs from "dayjs";
 import { FileUpload } from "./MiniComponents/FileUpload";
-import CallingSentPanel from "./MiniComponents/CallingSentPanel";
-import CallingReceivedPanel from "./MiniComponents/CallingReceivedPanel";
 import { getFileNameFromURL, UploadFileToFirebase } from "../Helpers/UploadFileToFirebase";
 
 var socket, currentChattingWith;
@@ -36,6 +34,8 @@ const ColorButton = styled(Button)(() => ({
 
 
 export const ChattingPage = () => {
+  const scrolldiv = createRef();
+  const dispatch = useDispatch();
   const { user, token } = useSelector((store) => store.user);
   var { unseenmsg } = useSelector((store) => store.notification);
 
@@ -51,9 +51,7 @@ export const ChattingPage = () => {
     messages
   } = useSelector((store) => store.chatting);
 
-  const scrolldiv = createRef();
-  const dispatch = useDispatch();
-
+  const currentFriend = members?.find((el) => (el?._id !== user?._id));
 
   useEffect(() => {
     const handleMessage = (rev_message) => {
@@ -63,7 +61,7 @@ export const ChattingPage = () => {
     webSocket.on("personal_message_from_server", handleMessage);
 
     return () => {
-      webSocket.off("personal_message_from_server",);
+      webSocket.off("personal_message_from_server", handleMessage);
     }
   }, []);
 
@@ -89,8 +87,8 @@ export const ChattingPage = () => {
     <div className="chattingpage">
       <div className="top-header">
         <div className="user-header">
-          <Avatar src={type === "group" ? profile_picture : "P"} />
-          <p className="user-name">{type === "group" ? chatroom_title : user?.username}</p>
+          <Avatar src={type === "group" ? profile_picture : currentFriend?.avatar} />
+          <p className="user-name">{type === "group" ? chatroom_title : currentFriend?.username}</p>
         </div>
         <div>
           <div className="user-fet">
@@ -149,8 +147,8 @@ export const ChattingPage = () => {
               </div>
               {isSameSender(messages, index) ? (
                 <Avatar
-                  //src={el.sender_id != user._id ? el.sender.pic : user.pic}
-                  src={user?.avatar}
+                  src={el.sender_id != user._id ? currentFriend?.avatar : user.avatar}
+                // src={user?.avatar}
                 />
               ) : (
                 <div className="blank-div"></div>
@@ -166,8 +164,6 @@ export const ChattingPage = () => {
           token={token}
         />
       </div>
-      {/* <CallingSentPanel /> */}
-      {/* <CallingReceivedPanel /> */}
     </div >
   );
 };

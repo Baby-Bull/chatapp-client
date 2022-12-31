@@ -112,12 +112,16 @@ export const FileUpload = ({
                     open={open}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem
+                        className="mini_button"
+                        onClick={handleClose}>
                         <RecordVoiceOverIcon
                             onClick={() => setOpenRecordPanel(true)}
                         />
                     </MenuItem>
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem
+                        className="mini_button"
+                        onClick={handleClose}>
                         <AudioFileIcon />
                     </MenuItem>
                 </Menu>

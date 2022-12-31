@@ -8,6 +8,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { formatMinutes, formatSeconds } from "../../Helpers/HelperFunctions";
 import useRecorder from "../../Helpers/useRecorder";
 import { IconButton } from "@mui/material";
+import { toast } from "react-toastify";
 
 export default function RecorderPanel({ openRecordPanel, setOpenRecordPanel }) {
 
@@ -15,35 +16,26 @@ export default function RecorderPanel({ openRecordPanel, setOpenRecordPanel }) {
     const { recordMinutes, recordSeconds, initRecording } = recorderState;
     const { startRecording, saveRecording, cancelRecording } = handlers;
 
-
-    const [statusRecord, setStatusRecord] = useState(false);
-
-
-    console.log(firebaseRes);
-
     const handleRecord = () => {
-        statusRecord && startRecording();
-        startRecording() && setStatusRecord(!statusRecord);
+        startRecording();
+        !initRecording && toast.error("Browser not support microphone")
     }
 
     return (
         <ModalCustom
             open={openRecordPanel}
             className="panel_record"
-            onClose={() => {
-                setOpenRecordPanel(false);
-                setStatusRecord(false)
-            }}
+            onClose={() => setOpenRecordPanel(false)}
         >
             <Box className="panel_border panel_record_content" >
                 <div className="button_trigger_zone">
                     <IconButton
-                        className={statusRecord ? "button_trigger_on_phone" : "button_trigger_off_phone"}
+                        className={initRecording ? "button_trigger_on_phone" : "button_trigger_off_phone"}
                         onClick={handleRecord}
                     >
                         <MicIcon className="icon_phone" />
                     </IconButton>
-                    <span style={{ fontSize: "0.7em", fontWeight: "700" }}>{statusRecord && "Press to record"}</span>
+                    <span style={{ fontSize: "0.7em", fontWeight: "700" }}>{!initRecording && "Press to record"}</span>
                 </div>
                 <div className="controls-container">
                     <div className="recorder-display">
@@ -52,39 +44,29 @@ export default function RecorderPanel({ openRecordPanel, setOpenRecordPanel }) {
                             <span>:</span>
                             <span>{formatSeconds(recordSeconds)}</span>
                         </div>
-                        {initRecording && (
-                            <div className="cancel-button-container">
+                        <div className="button_controll_record">
+                            {initRecording && (
                                 <IconButton
-                                    lassName="cancel-button"
+                                    className="cancel-button button_recorder"
                                     title="Cancel recording"
                                     onClick={cancelRecording}
                                 >
                                     <ClearIcon />
                                 </IconButton>
-                            </div>
-                        )}
-                    </div>
-                    <div className="start-button-container">
-                        {initRecording ? (
-                            <IconButton
-                                className="start-button"
-                                title="Save recording"
-                                disabled={recordSeconds === 0}
-                                onClick={async () => {
-                                    await saveRecording();
-                                }}
-                            >
-                                <SendIcon />
-                            </IconButton>
-                        ) : (
-                            <button
-                                className="start-button"
-                                title="Start recording"
-                            //onClick={startRecording}
-                            >
-                                start
-                            </button>
-                        )}
+                            )}
+                            {initRecording && (
+                                <IconButton
+                                    className="start-button button_recorder"
+                                    title="Save recording"
+                                    disabled={recordSeconds === 0}
+                                    onClick={async () => {
+                                        await saveRecording();
+                                    }}
+                                >
+                                    <SendIcon />
+                                </IconButton>
+                            )}
+                        </div>
                     </div>
                 </div>
             </Box>
