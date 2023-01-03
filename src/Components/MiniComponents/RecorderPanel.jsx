@@ -10,20 +10,32 @@ import useRecorder from "../../Helpers/useRecorder";
 import { IconButton } from "@mui/material";
 import { toast } from "react-toastify";
 
-export default function RecorderPanel({ openRecordPanel, setOpenRecordPanel }) {
+export default function RecorderPanel({
+    setOpenRecordPanel,
+    onSelectItem,
+    handleSendRecordMessage
+}) {
 
     const { recorderState, firebaseRes, ...handlers } = useRecorder();
     const { recordMinutes, recordSeconds, initRecording } = recorderState;
     const { startRecording, saveRecording, cancelRecording } = handlers;
 
-    const handleRecord = () => {
-        startRecording();
-        !initRecording && toast.error("Browser not support microphone")
+    const handleRecord = async () => {
+        onSelectItem("audio");
+        await startRecording();
+        // !initRecording && toast.error("Browser not support microphone")
     }
 
+    console.log(firebaseRes);
+    const handlerSendRecord = async () => {
+        saveRecording();
+        console.log(firebaseRes?.url);
+        //handleSendRecordMessage(firebaseRes?.url);
+        setOpenRecordPanel(false)
+    }
     return (
         <ModalCustom
-            open={openRecordPanel}
+            open={true}
             className="panel_record"
             onClose={() => setOpenRecordPanel(false)}
         >
@@ -59,9 +71,7 @@ export default function RecorderPanel({ openRecordPanel, setOpenRecordPanel }) {
                                     className="start-button button_recorder"
                                     title="Save recording"
                                     disabled={recordSeconds === 0}
-                                    onClick={async () => {
-                                        await saveRecording();
-                                    }}
+                                    onClick={handlerSendRecord}
                                 >
                                     <SendIcon />
                                 </IconButton>

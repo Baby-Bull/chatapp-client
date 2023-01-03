@@ -6,18 +6,30 @@ import CallIcon from '@mui/icons-material/Call';
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import SettingsIcon from '@mui/icons-material/Settings';
+import webSocket from "../../Utils/socket"
+import dayjs from "dayjs";
 
-export default function CallingSentPanel() {
-    const [open, setOpen] = useState(true);
+export default function CallingSentPanel({ setOpenCallingSentPanel, chatroom_id, sender_id, currentFriend }) {
+
+    const handleCancelCallRequest = () => {
+        setOpenCallingSentPanel(false);
+        webSocket.emit({
+            message_type: "cancel_calling_request_from_client",
+            chatroom_id: chatroom_id,
+            sender_id: sender_id,
+            createdAt: dayjs().format()
+        });
+    }
+
     return (
         <Modal
-            open={open}
+            open={true}
         // onClose={handleClose}
         >
             <Box className="panel_calling_sent" >
                 <Box className="info_zone">
-                    <Avatar className="avatar_user" />
-                    <Typography className="username">Personal 1-112F</Typography>
+                    <Avatar className="avatar_user" src={currentFriend?.avatar} />
+                    <Typography className="username">{currentFriend?.username}</Typography>
                 </Box>
                 <Box className="controller_zone">
                     <div className="cotroller_item">
@@ -42,11 +54,12 @@ export default function CallingSentPanel() {
                         <Typography className="controller_label">Setting</Typography>
                     </div>
                 </Box>
-                <div class="pulse"> <CallIcon className="icon_phone" /> </div>
+                <div className="pulse" onClick={handleCancelCallRequest}> <CallIcon className="icon_phone" /> </div>
                 <Typography sx={{
                     color: "red",
                     fontSize: "12px"
-                }}>End</Typography>
+                }}
+                >End</Typography>
             </Box>
         </Modal>
     )

@@ -18,6 +18,7 @@ import webSocket from "../Utils/socket";
 import dayjs from "dayjs";
 import { FileUpload } from "./MiniComponents/FileUpload";
 import { getFileNameFromURL, UploadFileToFirebase } from "../Helpers/UploadFileToFirebase";
+import CallingSentPanel from "./MiniComponents/CallingSentPanel";
 
 var socket, currentChattingWith;
 const ColorButton = styled(Button)(() => ({
@@ -50,8 +51,10 @@ export const ChattingPage = () => {
     },
     messages
   } = useSelector((store) => store.chatting);
-
   const currentFriend = members?.find((el) => (el?._id !== user?._id));
+
+
+  const [openCallingSentPanel, setOpenCallingSentPanel] = useState(false);
 
   useEffect(() => {
     const handleMessage = (rev_message) => {
@@ -59,9 +62,19 @@ export const ChattingPage = () => {
       // InputContWithEmog(user?._id, _id)
     }
     webSocket.on("personal_message_from_server", handleMessage);
+    webSocket.on("reject_call_request_from_server", () => setOpenCallingSentPanel(false));
+    webSocket.on("accept_call_request_from_server", () => {
+      setOpenCallingSentPanel(false);
+      window.open('/meeting', '_blank');
+    });
 
     return () => {
       webSocket.off("personal_message_from_server", handleMessage);
+      webSocket.off("reject_call_request_from_server", () => setOpenCallingSentPanel(false));
+      webSocket.off("accept_call_request_from_server", () => {
+        setOpenCallingSentPanel(false);
+        window.open('/meeting', '_blank');
+      });
     }
   }, []);
 
@@ -94,13 +107,15 @@ export const ChattingPage = () => {
           <div className="user-fet">
             <SearchIcon />
             <CallIcon
-              onClick={() =>
+              onClick={() => {
+                setOpenCallingSentPanel(true);
                 webSocket.emit({
                   message_type: "call_request_from_client",
                   chatroom_id: _id,
                   sender_id: user?._id,
                   createdAt: dayjs()
-                })
+                });
+              }
               }
             />
             <VideoCallIcon />
@@ -135,7 +150,12 @@ export const ChattingPage = () => {
                         </div>
                         <DownloadIcon className="icon_download" />
                       </div>
-                    </a>
+                    </a>,
+                    "audio":
+                      <audio controls>
+                        <source src={el?.content} type="audio/mpeg" />
+                        Your browser does not support the html audio tag.
+                      </audio>
                   }
                   [el.content_type]
                 }
@@ -148,7 +168,6 @@ export const ChattingPage = () => {
               {isSameSender(messages, index) ? (
                 <Avatar
                   src={el.sender_id != user._id ? currentFriend?.avatar : user.avatar}
-                // src={user?.avatar}
                 />
               ) : (
                 <div className="blank-div"></div>
@@ -164,6 +183,13 @@ export const ChattingPage = () => {
           token={token}
         />
       </div>
+      {openCallingSentPanel &&
+        <CallingSentPanel
+          setOpenCallingSentPanel={setOpenCallingSentPanel}
+          chatroom_id={_id}
+          sender_id={user._id}
+          currentFriend={currentFriend}
+        />}
     </div >
   );
 };
@@ -202,6 +228,24 @@ function InputContWithEmog({ _sender_id, id }) {
     setProgress(0);
     setSelectedFile(null);
   }
+
+
+  async function handleSendRecordMessage(content_url_record) {
+    instancePayload = {
+      ...instancePayload,
+      content: content_url_record,
+      content_type: "audio"
+    }
+    webSocket.emit(instancePayload);
+    dispatch(
+      sendMessageApi(instancePayload)
+    );
+    setContent("");
+    setContent_type("text");
+    setProgress(0);
+  }
+
+
   return (
     <>
       <div className="search-cont send-message">
@@ -218,6 +262,7 @@ function InputContWithEmog({ _sender_id, id }) {
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
         progress={progress}
+        handleSendRecordMessage={handleSendRecordMessage}
       />
       <ColorButton
         onClick={handleSendMessage}

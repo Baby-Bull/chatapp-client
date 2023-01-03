@@ -7,17 +7,19 @@ import { Link, Navigate, redirect } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
 import { authRegister, uploadPic } from "../Redux/Auth/action";
+import { useNavigate } from "react-router-dom";
 import { register } from "../../Services/auth";
 export const RegisterComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const [regData, setRegData] = useState({
-    avatar: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+    avatar: avatar,
     isAdmin: false,
     username: "",
     email: "",
     password: "",
   });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setRegData({ ...regData, [name]: value });
@@ -37,7 +39,8 @@ export const RegisterComp = () => {
     //if (user.pic) regData["pic"] = user.pic;
     console.log(res);
     if (res?.statusCode === 200) {
-      return <Navigate to={"/login"} />;
+      console.log("adasdadas");
+      navigate("/login");
     }
   };
   if (user._id) {

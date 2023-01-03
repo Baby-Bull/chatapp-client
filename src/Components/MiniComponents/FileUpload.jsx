@@ -7,14 +7,14 @@ import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import AudioFileIcon from '@mui/icons-material/AudioFile';
 import { Box, LinearProgress, Menu, MenuItem } from "@mui/material";
-import { getFileNameFromURL } from "../../Helpers/UploadFileToFirebase";
 import RecorderPanel from "./RecorderPanel";
 
 export const FileUpload = ({
     setContent_type,
     setSelectedFile,
     selectedFile,
-    progress
+    progress,
+    handleSendRecordMessage
 }) => {
 
     const [openRecordPanel, setOpenRecordPanel] = useState(false)
@@ -89,7 +89,7 @@ export const FileUpload = ({
                 onClick={event => event.target.value = null}
                 ref={uploadFileButton}
                 style={{ display: "none" }}
-                accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf"
+                accept=".xlsx, .xls, .doc, .docx,.ppt, .pptx,.txt,.pdf"
             />
             <Box className="media_message_buttons">
                 <AddPhotoAlternateIcon
@@ -112,16 +112,12 @@ export const FileUpload = ({
                     open={open}
                     onClose={handleClose}
                 >
-                    <MenuItem
-                        className="mini_button"
-                        onClick={handleClose}>
+                    <MenuItem onClick={handleClose}>
                         <RecordVoiceOverIcon
                             onClick={() => setOpenRecordPanel(true)}
                         />
                     </MenuItem>
-                    <MenuItem
-                        className="mini_button"
-                        onClick={handleClose}>
+                    <MenuItem onClick={handleClose}>
                         <AudioFileIcon />
                     </MenuItem>
                 </Menu>
@@ -142,10 +138,11 @@ export const FileUpload = ({
                 </div>
             }
 
-            <RecorderPanel
-                openRecordPanel={openRecordPanel}
+            {openRecordPanel && <RecorderPanel
                 setOpenRecordPanel={setOpenRecordPanel}
-            />
+                onSelectItem={onSelectItem}
+                handleSendRecordMessage={handleSendRecordMessage}
+            />}
         </div>
     )
 }

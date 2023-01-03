@@ -16,9 +16,9 @@ export default function ProfileUserPanel({ open, setOpen }) {
 
     const [formUpdate, setFormUpdate] = useState({
         id: user?._id,
-        avatar: "",
-        username: "",
-        email: ""
+        avatar: user?.avatar,
+        username: user?.username,
+        email: user?.email
     })
 
     const changeFormValue = (e) => {

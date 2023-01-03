@@ -7,8 +7,6 @@ import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import ScreenShareIcon from '@mui/icons-material/ScreenShare';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import CallingReceivedPanel from './MiniComponents/CallingReceivedPanel';
-import CallingSentPanel from './MiniComponents/CallingSentPanel';
 
 export const MeetingComp = () => {
     return (
@@ -43,9 +41,6 @@ export const MeetingComp = () => {
                     <CallEndIcon fontSize="inherit" />
                 </IconButton>
             </Box>
-
-            <CallingSentPanel />
-            <CallingReceivedPanel />
         </Box>
     )
 }

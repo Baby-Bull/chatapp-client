@@ -19,7 +19,7 @@ export const MyChat = () => {
     (store) => store.recentChat
   );
 
-  const { user, token } = useSelector((store) => store.user);
+  const { user } = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
   const { notification, unseenmsg } = useSelector(
     (store) => store.notification
@@ -152,17 +152,6 @@ export const MyChat = () => {
       <div className="recent-chat">
         <p className="Recent">Recent</p>
         <div className="recent-user">
-          {/* {search
-            ? search_result.map((el) => (
-              <SearchUserComp
-                key={el._id}
-                {...el}
-                token={token}
-                recent_chat={recent_chat}
-                setSearch={setSearch}
-              />
-            ))
-            : !chat_loading && */}
           {recent_chat.map((el, index) => (
             <ChatUserComp
               // key={el._id}
@@ -247,6 +236,8 @@ const ChatUserComp = ({
       })
     );
   };
+  const currentFriend = members?.find((el) => (el?._id !== user?._id));
+
   return (
     <div
       onClick={handleSelectChat}
@@ -254,10 +245,9 @@ const ChatUserComp = ({
     >
       <div className="history-cont">
         {(type === "group") ? (
-          <div>{<Avatar>G</Avatar>}</div>
+          <div>{<Avatar src={profile_picture} />}</div>
         ) : (
-          // <div>{<Avatar src={users.find((el) => el._id != id)?.pic} />}</div>
-          <div>{<Avatar>P</Avatar>}</div>
+          <div>{<Avatar src={currentFriend?.avatar} />}</div>
         )}
         <div>
           {(type === "group") ? (

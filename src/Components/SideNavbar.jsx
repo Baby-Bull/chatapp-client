@@ -50,7 +50,7 @@ export default function SideNavbar() {
         <LightTooltip placement="top" title="Dark/Light Mode">
           <DarkModeOutlinedIcon />
         </LightTooltip>
-        <LogoutIcon onClick={() => logout()} />
+        <LogoutIcon onClick={() => dispatch(logout())} />
       </div>
 
       <ProfileUserPanel

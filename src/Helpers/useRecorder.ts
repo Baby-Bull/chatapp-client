@@ -11,10 +11,10 @@ const initialStateRecord = {
     audio: null || "",
 };
 
-const startRecord = async (setRecordState) => {
+const startRecord = async (setRecordState: any) => {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        setRecordState((prevState) => {
+        setRecordState((prevState: any) => {
             return {
                 ...prevState,
                 initRecording: true,
@@ -27,7 +27,7 @@ const startRecord = async (setRecordState) => {
     }
 }
 
-const saveRecord = (rec) => {
+const saveRecord = (rec: any) => {
     if (rec.state !== "inactive") rec.stop();
 }
 
@@ -94,6 +94,8 @@ export default function useRecorder() {
                 arraysData = [];
                 const resUpload = await UploadFileToFirebase(blob);
                 setFirebaseRes(resUpload);
+                console.log(resUpload);
+
 
                 setRecordState((prevState: any) => {
                     if (prevState.mediaRecorder) {

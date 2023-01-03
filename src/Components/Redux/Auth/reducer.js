@@ -48,7 +48,11 @@ export const authReducer = (store = initState, { type, payload }) => {
     case AUTH_LOADING:
       return { ...store, loading: payload };
     case LOGOUT:
-      return logoutState;
+      return {
+        ...store,
+        user: { ...user, _id: null },
+        loading: false
+      };
     default:
       return store;
   }

@@ -1,7 +1,3 @@
-import { findDOMNode } from "react-dom";
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { parseCookies } from "nookies";
 import { getItemFromCookie } from "./storage";
 
 const urlSocket = "ws://localhost:8080";
@@ -94,6 +90,5 @@ const webSocketClient = () => {
 };
 
 const socketResult = (typeof window !== 'undefined') ? webSocketClient() : null;
-//const socketResult =  null;
 
 export default socketResult;
