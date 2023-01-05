@@ -15,7 +15,7 @@ import { logout } from "./Redux/Auth/action";
 import { useState } from "react";
 import ProfileUserPanel from "./MiniComponents/ProfileUserPanel";
 export default function SideNavbar() {
-  const { user, loading, error } = useSelector((store) => store.user);
+  const { user } = useSelector((store) => store.user);
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
@@ -25,28 +25,28 @@ export default function SideNavbar() {
       <div>
         <Avatar
           onClick={() => { setOpen(true) }}
-          src={user.avatar}
+          src={user?.avatar}
         />
       </div>
       <div className="mid-icon">
-        <LightTooltip title="Profile" placement="top">
+        {/* <LightTooltip title="Profile" placement="top">
           <AccountCircleOutlinedIcon />
         </LightTooltip>
         <LightTooltip placement="top" title="Chats">
           <ChatOutlinedIcon />
-        </LightTooltip>
+        </LightTooltip> */}
         <LightTooltip placement="top" title="Groups">
           <CustomizedDialogs />
         </LightTooltip>
-        <LightTooltip placement="top" title="Contacts">
+        {/* <LightTooltip placement="top" title="Contacts">
           <AssignmentIndOutlinedIcon />
-        </LightTooltip>
-        <LightTooltip placement="top" title="Settings">
+        </LightTooltip> */}
+        {/* <LightTooltip placement="top" title="Settings">
           <SettingsOutlinedIcon />
-        </LightTooltip>
+        </LightTooltip> */}
       </div>
       <div className="bottom-icon">
-        <LanguageOutlinedIcon />
+        {/* <LanguageOutlinedIcon /> */}
         <LightTooltip placement="top" title="Dark/Light Mode">
           <DarkModeOutlinedIcon />
         </LightTooltip>

@@ -22,6 +22,7 @@ export const FileUpload = ({
     const [preview, setPreview] = useState();
     const uploadImageButton = useRef();
     const uploadFileButton = useRef();
+    const uploadAudioButton = useRef();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClose = () => {
@@ -91,6 +92,14 @@ export const FileUpload = ({
                 style={{ display: "none" }}
                 accept=".xlsx, .xls, .doc, .docx,.ppt, .pptx,.txt,.pdf"
             />
+            <input
+                type='file'
+                onChange={onSelectItem("audio")}
+                onClick={event => event.target.value = null}
+                ref={uploadAudioButton}
+                style={{ display: "none" }}
+                accept="audio/*"
+            />
             <Box className="media_message_buttons">
                 <AddPhotoAlternateIcon
                     className="icon_mui"
@@ -118,7 +127,7 @@ export const FileUpload = ({
                         />
                     </MenuItem>
                     <MenuItem onClick={handleClose}>
-                        <AudioFileIcon />
+                        <AudioFileIcon onClick={() => uploadAudioButton.current.click()} />
                     </MenuItem>
                 </Menu>
             </Box>
