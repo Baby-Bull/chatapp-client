@@ -1,4 +1,4 @@
-import { Avatar } from "@mui/material";
+import { Avatar, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -32,7 +32,14 @@ export const HomeComp = () => {
   }
 
   return (
-    <div className="home-cont">
+    <Box
+      className="home-cont"
+      sx={{
+        display: "flex",
+        bgcolor: "background.default",
+        color: "text.primary",
+      }}
+    >
       <SideNavbar />
       <MyChat />
       {chatting._id ? <ChattingPage /> : <MessageStarter {...user} />}
@@ -43,7 +50,7 @@ export const HomeComp = () => {
           sender_id={user._id}
           currentFriend={currentFriend}
         />}
-    </div>
+    </Box>
   );
 };
 

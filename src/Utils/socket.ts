@@ -35,7 +35,6 @@ const webSocketClient = () => {
             }
         };
 
-
         initialSocket = new WebSocket(urlSocket);
 
         initialSocket.onopen = () => {

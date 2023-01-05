@@ -97,14 +97,26 @@ export const ChattingPage = () => {
   };
 
   return (
-    <div className="chattingpage">
-      <div className="top-header">
-        <div className="user-header">
+    <Box
+      className="chattingpage"
+      sx={{
+        bgcolor: "chattingPageBg.default",
+        color: "chattingPageTopText.default",
+      }}
+    >
+      <Box
+        className="top-header"
+        sx={{
+          bgcolor: "background.default",
+          color: "chattingPageTopText.default",
+        }}
+      >
+        <Box className="user-header">
           <Avatar src={type === "group" ? profile_picture : currentFriend?.avatar} />
           <p className="user-name">{type === "group" ? chatroom_title : currentFriend?.username}</p>
-        </div>
-        <div>
-          <div className="user-fet">
+        </Box>
+        <Box>
+          <Box className="user-fet">
             <SearchIcon />
             <CallIcon
               onClick={() => {
@@ -120,17 +132,29 @@ export const ChattingPage = () => {
             />
             <VideoCallIcon />
             <MoreHorizIcon />
-          </div>
-        </div>
-      </div>
-      <div ref={scrolldiv} className="live-chat">
+          </Box>
+        </Box>
+      </Box>
+      <Box
+        ref={scrolldiv}
+        className="live-chat"
+        sx={{
+          bgcolor: "background.default",
+          color: "text.primary",
+        }}
+      >
         {messages?.map((el, index) => (
-          <div
+          <Box
             key={index}
             className={el.sender_id !== user._id ? "rihgtuser-chat" : "leftuser-chat"}
           >
-            <div className={el.sender_id !== user._id ? "right-avt" : "left-avt"}>
-              <div className={ChatlogicStyling(el.sender_id, user._id)}>
+            <Box className={el.sender_id !== user._id ? "right-avt" : "left-avt"}>
+              <Box
+                className={ChatlogicStyling(el.sender_id, user._id)}
+                sx={{
+                  bgcolor: "chattingPageLeftUserBg.default"
+                }}
+              >
                 {
                   {
                     "text": <p>{el.content}</p>,
@@ -143,13 +167,13 @@ export const ChattingPage = () => {
                       style={{ textDecoration: "none" }}
                       href={el.content}
                       target="_blank">
-                      <div className="file_message">
-                        <div className="texts">
+                      <Box className="file_message">
+                        <Box className="texts">
                           <span className="first_text">Click to download file</span>
                           <span className="second_text">{getFileNameFromURL(el?.content)}</span>
-                        </div>
+                        </Box>
                         <DownloadIcon className="icon_download" />
-                      </div>
+                      </Box>
                     </a>,
                     "audio":
                       <audio controls>
@@ -164,7 +188,7 @@ export const ChattingPage = () => {
                     ":" +
                     new Date(el.createdAt).getMinutes()}
                 </p>
-              </div>
+              </Box>
               {isSameSender(messages, index) ? (
                 <Avatar
                   src={el.sender_id != user._id ? currentFriend?.avatar : user.avatar}
@@ -172,17 +196,23 @@ export const ChattingPage = () => {
               ) : (
                 <div className="blank-div"></div>
               )}
-            </div>
-          </div>
+            </Box>
+          </Box>
         ))}
-      </div>
-      <div className="sender-cont">
+      </Box>
+      <Box
+        className="sender-cont"
+        sx={{
+          bgcolor: "background.default",
+          color: "text.primary",
+        }}
+      >
         <InputContWithEmog
           _sender_id={user._id}
           id={_id}
           token={token}
         />
-      </div>
+      </Box>
       {openCallingSentPanel &&
         <CallingSentPanel
           setOpenCallingSentPanel={setOpenCallingSentPanel}
@@ -190,7 +220,7 @@ export const ChattingPage = () => {
           sender_id={user._id}
           currentFriend={currentFriend}
         />}
-    </div >
+    </Box >
   );
 };
 

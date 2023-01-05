@@ -1,3 +1,4 @@
+import "./components.scss"
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -12,6 +13,8 @@ import { selectChat } from "./Redux/Chatting/action";
 import { removeSeenMsg } from "./Redux/Notification/action";
 import { getAllUsersByName } from "../Services/auth";
 import { Box } from "@mui/system";
+import CustomizedDialogs from "./GroupMode";
+import { LightTooltip } from "./SideNavbar";
 
 export const MyChat = () => {
   const dispatch = useDispatch();
@@ -25,18 +28,6 @@ export const MyChat = () => {
     (store) => store.notification
   );
   const [resultChatroom, setResultChatroom] = useState([])
-
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const { refetch: fetchChat, data: chatrooms } = useQuery({
-  //   queryKey: searchQuery,
-  //   queryFn: async () => {
-  //     const resTemp = await getAllUsersByName({ string: searchQuery });
-  //     setResultChatroom(resTemp);
-  //   }
-  // })
-  // useEffect(() => {
-  //   fetchChat();
-  // }, [searchQuery])
 
   const debounce = (fn) => {
     let time;
@@ -64,23 +55,6 @@ export const MyChat = () => {
     dispatch(makeRecentChatApi(user?._id));
   }, [user]);
 
-  // const ref = useRef();
-
-  // const handleQuery = (e) => {
-  //   let id;
-  //   return function (e) {
-  //     if (!e.target.value) {
-  //       setSearch(false);
-  //       return;
-  //     }
-  //     if (ref.current) clearTimeout(ref.current);
-  //     setSearch(true);
-  //     ref.current = setTimeout(() => {
-  //       dispatch(makeSearchApi(e.target.value));
-  //     }, 1000);
-  //   };
-  // };
-
   const submitCreateNewChat = (friend) => {
     const payload = {
       lastest_message: "Chatroom has been created",
@@ -93,62 +67,70 @@ export const MyChat = () => {
 
 
   return (
-    <div className="mychat-cont">
-      <div>
-        <div className="notification">
-          <h2>Chats</h2>
-          <NotificationsIcon />
-          <Badge badgeContent={notification} color="error">
-            <Notificationcomp />
-          </Badge>
-          {/* <AddIcon /> */}
-        </div>
-        <div style={{ position: "relative" }}>
-          <div className="search-cont">
-            <SearchIcon />
-            <input
-              onChange={(e) => {
-                optimizedFn(e.target.value);
-              }}
-              type="text"
-              placeholder="Search users"
-            />
-          </div>
-          {resultChatroom?.length ?
-            <Box
-              sx={{
-                position: "absolute",
-                width: '100%',
-                height: "fit-content",
-                maxHeight: "40em",
-                bgcolor: '#ebebeb',
-                overflowY: "auto"
-              }}
-            >
-              <List>
-                {resultChatroom.map((u) => (
-                  <ListItem onClick={() => submitCreateNewChat(u)}>
-                    <ListItemButton>
-                      <Grid container spacing={2}>
-                        <Grid item xs={4}>
-                          <Avatar
-                            src={u?.avatar}
-                          />
-                        </Grid>
-                        <Grid item xs={4}>
-                          <Typography>
-                            {u?.username}
-                          </Typography>
-                        </Grid>
+    <Box
+      className="mychat-cont"
+      sx={{
+        bgcolor: "myChatBg.default",
+        color: "text.primary",
+      }}
+    >
+
+      <Box className="notification">
+        <h2>Chats</h2>
+        <LightTooltip placement="top" title="Groups">
+          <CustomizedDialogs />
+        </LightTooltip>
+        <Badge badgeContent={notification} color="error">
+          <Notificationcomp />
+        </Badge>
+        {/* <AddIcon /> */}
+      </Box>
+      <Box
+        className="search_zone"
+        sx={{
+          position: "relative"
+        }}>
+        <Box
+          className="search-cont"
+          sx={{
+            bgcolor: "myChatInputBg.default"
+          }}
+        >
+          <SearchIcon />
+          <input
+            onChange={(e) => {
+              optimizedFn(e.target.value);
+            }}
+            type="text"
+            placeholder="Search users"
+          />
+        </Box>
+        {resultChatroom?.length ?
+          <Box className="search_res" >
+            <List>
+              {resultChatroom.map((u) => (
+                <ListItem onClick={() => submitCreateNewChat(u)}>
+                  <ListItemButton>
+                    <Grid container spacing={2}>
+                      <Grid item xs={4}>
+                        <Avatar
+                          src={u?.avatar}
+                        />
                       </Grid>
-                    </ListItemButton>
-                  </ListItem>
-                ))
-                }
-              </List>
-            </Box> : null}
-        </div>
-      </div>
+                      <Grid item xs={4}>
+                        <Typography>
+                          {u?.username}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </ListItemButton>
+                </ListItem>
+              ))
+              }
+            </List>
+          </Box> : null}
+      </Box>
+
       <div className="recent-chat">
         <p className="Recent">Recent</p>
         <div className="recent-user">
@@ -163,7 +145,7 @@ export const MyChat = () => {
           ))}
         </div>
       </div>
-    </div>
+    </Box>
   );
 };
 
@@ -239,21 +221,35 @@ const ChatUserComp = ({
   const currentFriend = members?.find((el) => (el?._id !== user?._id));
 
   return (
-    <div
+    <Box
       onClick={handleSelectChat}
       className={chatting?._id == _id ? "user selectUser" : "user"}
+      sx={{
+        bgcolor: chatting?._id == _id ? "myChatUserBgHover.default" : "myChatUserBg.default",
+        '&:hover': {
+          bgcolor: "myChatUserBgHover.default",
+        },
+      }}
     >
-      <div className="history-cont">
+      <Box className="history-cont">
         {(type === "group") ? (
-          <div>{<Avatar src={profile_picture} />}</div>
+          <Box>{<Avatar src={profile_picture} />}</Box>
         ) : (
-          <div>{<Avatar src={currentFriend?.avatar} />}</div>
+          <Box>{<Avatar src={currentFriend?.avatar} />}</Box>
         )}
-        <div>
+        <Box
+          sx={{
+            color: "myChatUserText.default"
+          }}
+        >
           {(type === "group") ? (
-            <p className="name">{chatroom_title || "No Name"}</p>
+            <Typography
+              className="name"
+            >{chatroom_title || "No Name"}</Typography>
           ) : (
-            <p className="name">{members.find((el) => el._id != user?._id)?.username}</p>
+            <Typography
+              className="name"
+            >{members.find((el) => el._id != user?._id)?.username}</Typography>
           )}
           <p className="chat">
             {lastest_message
@@ -262,9 +258,9 @@ const ChatUserComp = ({
                 : lastest_message
               : ""}
           </p>
-        </div>
-      </div>
-      <div>
+        </Box>
+      </Box>
+      <Box>
         {/* {lastest_message ? (
           <p className="time">
             {new Date(lastest_message?.updatedAt).getHours() +
@@ -275,8 +271,8 @@ const ChatUserComp = ({
           ""
         )} */}
         <p className="unseen-chat">5</p>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

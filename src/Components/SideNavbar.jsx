@@ -1,63 +1,61 @@
+import "./components.scss"
 import Avatar from "@mui/material/Avatar";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import { useSelector } from "react-redux";
-import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
-import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import { useDispatch } from "react-redux";
-import LogoutIcon from '@mui/icons-material/Logout';
-import styled from "@emotion/styled";
-import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import CustomizedDialogs from "./GroupMode";
+import LogoutIcon from '@mui/icons-material/Logout';
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import styled from "@emotion/styled";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logout } from "./Redux/Auth/action";
-import { useState } from "react";
+import React, { useState } from "react";
 import ProfileUserPanel from "./MiniComponents/ProfileUserPanel";
+import { ColorModeContext } from "../Helpers/useTheme";
+import { useTheme } from '@mui/material/styles';
+import { Box } from "@mui/material";
+
 export default function SideNavbar() {
   const { user } = useSelector((store) => store.user);
   const dispatch = useDispatch();
+  const theme = useTheme();
 
-  const [open, setOpen] = useState(false);
+  console.log(theme.palette.mode);
+
+  const [openUserProfile, setUserProfile] = useState(false);
+  const colorMode = React.useContext(ColorModeContext);
 
   return (
-    <div className="side-nav">
+    <Box
+      sx={{
+        bgcolor: "sideBarBg.default",
+        color: "iconSideBar.default",
+      }}
+      className="side-nav"
+    >
       <div>
         <Avatar
-          onClick={() => { setOpen(true) }}
+          onClick={() => { setUserProfile(true) }}
           src={user?.avatar}
         />
       </div>
-      <div className="mid-icon">
-        {/* <LightTooltip title="Profile" placement="top">
-          <AccountCircleOutlinedIcon />
-        </LightTooltip>
-        <LightTooltip placement="top" title="Chats">
-          <ChatOutlinedIcon />
-        </LightTooltip> */}
-        <LightTooltip placement="top" title="Groups">
-          <CustomizedDialogs />
-        </LightTooltip>
-        {/* <LightTooltip placement="top" title="Contacts">
-          <AssignmentIndOutlinedIcon />
-        </LightTooltip> */}
-        {/* <LightTooltip placement="top" title="Settings">
-          <SettingsOutlinedIcon />
-        </LightTooltip> */}
-      </div>
       <div className="bottom-icon">
-        {/* <LanguageOutlinedIcon /> */}
-        <LightTooltip placement="top" title="Dark/Light Mode">
+        <LightTooltip
+          placement="top"
+          title="Dark/Light Mode"
+          onClick={colorMode.toggleColorMode}
+        >
           <DarkModeOutlinedIcon />
         </LightTooltip>
-        <LogoutIcon onClick={() => dispatch(logout())} />
+        <LogoutIcon
+          onClick={() => dispatch(logout())}
+        />
       </div>
 
       <ProfileUserPanel
-        open={open}
-        setOpen={setOpen}
+        open={openUserProfile}
+        setOpen={setUserProfile}
       />
-    </div >
+    </Box >
   );
 }
 
