@@ -19,8 +19,6 @@ export default function SideNavbar() {
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  console.log(theme.palette.mode);
-
   const [openUserProfile, setUserProfile] = useState(false);
   const colorMode = React.useContext(ColorModeContext);
 

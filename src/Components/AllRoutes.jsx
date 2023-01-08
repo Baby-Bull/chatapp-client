@@ -3,8 +3,13 @@ import { LoginComp } from "./Auth/Login";
 import { RegisterComp } from "./Auth/Registration";
 import { HomeComp } from "./Home";
 import { MeetingComp } from "./MeetingPage";
+import webSocket from "../Utils/socket";
+import { useLayoutEffect } from "react";
 
 export const AllRoutes = () => {
+  useLayoutEffect(() => {
+    webSocket
+  }, []);
   return (
     <>
       <Routes>

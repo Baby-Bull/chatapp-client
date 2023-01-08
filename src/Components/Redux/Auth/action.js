@@ -52,7 +52,6 @@ export const updateUserAction = (userId, payload) => async (dispatch) => {
 
 export const logout = () => async (dispatch) => {
   dispatch(authLoading(true));
-  console.log("fffffd");
   try {
     localStorage.removeItem("userInfo");
     localStorage.removeItem("userId");
