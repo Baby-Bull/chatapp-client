@@ -8,7 +8,7 @@ import webSocket from "../../Utils/socket"
 import dayjs from "dayjs";
 
 
-export default function CallingReceivedPanel({ setOpenCallingReceivedPanel, chatroom_id, sender_id, currentFriend }) {
+export default function CallingReceivedPanel({ setOpenCallingReceivedPanel, chatroom_id, sender_id, callerInfo }) {
 
     const handleRejectCallingRequest = () => {
         setOpenCallingReceivedPanel(false);
@@ -37,8 +37,8 @@ export default function CallingReceivedPanel({ setOpenCallingReceivedPanel, chat
         >
             <Box className="panel_border panel_calling_sent" >
                 <Box className="info_zone">
-                    <Avatar className="avatar_user" src={currentFriend?.avatar} />
-                    <Typography className="username">{currentFriend?.username}</Typography>
+                    <Avatar className="avatar_user" src={callerInfo?.avatar} />
+                    <Typography className="username">{callerInfo?.username}</Typography>
                 </Box>
                 <div className="response_zone"
                     style={{ display: "flex" }}

@@ -25,13 +25,13 @@ const webSocketClient = () => {
     };
 
     const createNewWebSocket = () => {
-
         tryReconnectFn = () => {
             retries += 1;
             isClosed = retries >= 5;
             if (!isClosed) {
                 window.setTimeout(() => {
                     createNewWebSocket();
+                    emitInternal("reconnected", null);
                 }, 3000);
             }
         };
@@ -62,7 +62,15 @@ const webSocketClient = () => {
             }
         };
 
-        initialSocket.onclose = tryReconnectFn;
+        //initialSocket.onclose = tryReconnectFn;
+
+        initialSocket.onclose = function (e) {
+            console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+            setTimeout(function () {
+                createNewWebSocket();
+            }, 1000);
+        };
+
     }
 
     createNewWebSocket();
@@ -86,9 +94,16 @@ const webSocketClient = () => {
                 eventsArray.delete(message);
             }
         },
+        reconnect() {
+            createNewWebSocket();
+            emitInternal("reconnected", null);
+        },
     }
 };
 
-const socketResult = (typeof window !== 'undefined') ? webSocketClient() : null;
+const socketResult =
+    (typeof window !== 'undefined') ?
+        webSocketClient()
+        : null;
 
 export default socketResult;

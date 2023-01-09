@@ -13,12 +13,17 @@ import webSocket from "../Utils/socket";
 export const HomeComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
-  const currentFriend = chatting?.members?.find((el) => (el?._id !== user?._id));
+  const [callerInfo, setCallerInfo] = useState({});
 
   const [openCallingReceivedPanel, setOpenCallingReceivedPanel] = useState(false);
 
+  const handleCallRequestFromServer = async (message) => {
+    setCallerInfo(message?.sender_info);
+    setOpenCallingReceivedPanel(true);
+  }
+
   useEffect(() => {
-    webSocket.on("call_request_from_server", () => setOpenCallingReceivedPanel(true));
+    webSocket.on("call_request_from_server", handleCallRequestFromServer);
     webSocket.on("cancel_call_request_from_server", () => setOpenCallingReceivedPanel(false));
 
     return () => {
@@ -48,7 +53,7 @@ export const HomeComp = () => {
           setOpenCallingReceivedPanel={setOpenCallingReceivedPanel}
           chatroom_id={chatting._id}
           sender_id={user._id}
-          currentFriend={currentFriend}
+          callerInfo={callerInfo}
         />}
     </Box>
   );
