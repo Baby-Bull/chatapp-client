@@ -1,8 +1,9 @@
 import axios from "axios";
 import { getItemFromCookie } from "./storage";
 
+//const urlServer = process.env.REACT_APP_URL_SERVER;
 export const api = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: "https://funky-brass-papyrus.glitch.me" || 'http://localhost:8000',
     headers: {
         'Content-Type': 'application/json;charset=UTF-8',
         "Access-Control-Allow-Origin": "*",
