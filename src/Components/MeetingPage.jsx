@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import "./components.scss";
 import { Box, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -7,8 +7,78 @@ import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import ScreenShareIcon from '@mui/icons-material/ScreenShare';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import "../Utils/init";
+
+import Peer from "simple-peer";
 
 export const MeetingComp = () => {
+
+
+    const [streamCalling, setStreamCalling] = useState(null);
+    const [muteAudio, setMuteAudio] = useState(false);
+    const [muteVideo, setMuteVideo] = useState(false);
+
+    const myVideo = useRef();
+    const userVideo = useRef();
+
+
+    const peer = new Peer({
+        initiator: true,
+        trickle: true,
+        stream: streamCalling,
+    })
+
+
+
+
+    const callUser = (id) => {
+        setLoading(true);
+        const peer = new Peer({
+            initiator: true,
+            trickle: false,
+            stream: stream,
+        });
+
+        connectionRef.current = peer;
+    };
+
+
+
+    // useEffect(() => {
+    //     const peer = new Peer({
+    //         initiator: true,
+    //         trickle: true,
+    //         stream: streamCalling,
+    //     })
+    //     // peer.on("signal", (data) => {
+
+    //     // });
+
+    //     // peer.on("stream", (streamCurrent) => {
+    //     //     userVideo.current.srcObject = streamCurrent;
+    //     // });
+    // }, [])
+
+
+
+
+    useEffect(() => {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then((currentStream) => {
+                setStreamCalling(currentStream);
+                myVideo.current.srcObject = currentStream;
+            });
+    }, []);
+
+
+    const muteUnmute = () => {
+        const enable = streamCalling.getVideoTracks()[0].enabled;
+        if (enable) {
+            streamCalling.getVideoTracks()[0].enabled = false;
+        }
+    }
+
+
     return (
         <Box className='meeting_screen'>
             <Box className='buttons_top'>
@@ -18,11 +88,18 @@ export const MeetingComp = () => {
             </Box>
 
             <Box>
-                <video width="100%" height="100%" controls>
-                    <source src="movie.mp4" type="video/mp4" />
-                    <source src="movie.ogg" type="video/ogg" />
-                    Your browser does not support the video tag.
-                </video>
+                {/* {stream && (
+                    <video
+                        playsInline
+                        ref={myVideo}
+                        muted
+                        autoPlay
+                    />)} */}
+                <video
+                    playsInline
+                    ref={userVideo}
+                    autoPlay
+                />
             </Box>
             <Box className='controller_block'>
                 <IconButton size="large" className='button_controller'>

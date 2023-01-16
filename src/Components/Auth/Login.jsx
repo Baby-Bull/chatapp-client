@@ -7,7 +7,7 @@ import Stack from "@mui/material/Stack";
 import { Link, Navigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
-import { authRegister } from "../Redux/Auth/action";
+import { authLoading, authRegister } from "../Redux/Auth/action";
 import { login } from "../../Services/auth";
 import { toast } from "react-toastify";
 import { setRefreshToken, setUserToken } from "../../Utils/storage";
@@ -24,6 +24,7 @@ export const LoginComp = () => {
   };
 
   const handleSubmit = async () => {
+    dispatch(authLoading(true));
     const res = await login(regData.email, regData.password);
     const resSuccess = res?.data;
     if (res?.statusCode === 404)

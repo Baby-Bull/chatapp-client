@@ -9,6 +9,8 @@ import { Provider } from "react-redux";
 import { store } from "./Components/Redux/store";
 import { StyledEngineProvider } from '@mui/material/styles';
 import { ToggleColorMode } from "./Helpers/useTheme";
+import "./Utils/init";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>
   <StyledEngineProvider injectFirst>

@@ -33,7 +33,7 @@ const saveRecord = (rec: any) => {
 
 export default function useRecorder() {
     const [recordState, setRecordState] = useState(initialStateRecord);
-    const [firebaseRes, setFirebaseRes] = useState<any>();
+    const [firebaseRes, setFirebaseRes] = useState<any>({});
 
     useEffect(() => {
         const MAX_TIME = 5; // minutes to record
@@ -94,8 +94,6 @@ export default function useRecorder() {
                 arraysData = [];
                 const resUpload = await UploadFileToFirebase(blob);
                 setFirebaseRes(resUpload);
-                console.log(resUpload);
-
 
                 setRecordState((prevState: any) => {
                     if (prevState.mediaRecorder) {

@@ -5,6 +5,7 @@ import ModalCustom from "../Commons/ModalCustom";
 import MicIcon from '@mui/icons-material/Mic';
 import ClearIcon from '@mui/icons-material/Clear';
 import SendIcon from '@mui/icons-material/Send';
+import CircularProgress from "@mui/material/CircularProgress";
 import { formatMinutes, formatSeconds } from "../../Helpers/HelperFunctions";
 import useRecorder from "../../Helpers/useRecorder";
 import { IconButton } from "@mui/material";
@@ -20,6 +21,8 @@ export default function RecorderPanel({
     const { recordMinutes, recordSeconds, initRecording } = recorderState;
     const { startRecording, saveRecording, cancelRecording } = handlers;
 
+    const [loadingSendRecordMessage, setLoadingSendRecordMessage] = useState(false)
+
     const handleRecord = async () => {
         onSelectItem("audio");
         await startRecording();
@@ -27,12 +30,28 @@ export default function RecorderPanel({
     }
 
     console.log(firebaseRes);
+
     const handlerSendRecord = async () => {
+        setLoadingSendRecordMessage(true);
         saveRecording();
-        console.log(firebaseRes?.url);
-        //handleSendRecordMessage(firebaseRes?.url);
-        setOpenRecordPanel(false)
+        // if (firebaseRes?.profress === 100) {
+        //     console.log(firebaseRes?.url);
+        //     firebaseRes?.url && handleSendRecordMessage(firebaseRes?.url);
+        //     setOpenRecordPanel(false);
+        //     setLoadingSendRecordMessage(false);
+        // }
     }
+
+    useEffect(() => {
+        if (firebaseRes?.progress === 100) {
+            console.log(firebaseRes?.url);
+            firebaseRes?.url && handleSendRecordMessage(firebaseRes?.url);
+            setOpenRecordPanel(false);
+            setLoadingSendRecordMessage(false);
+        }
+    }, [firebaseRes?.url])
+
+
     return (
         <ModalCustom
             open={true}
@@ -67,14 +86,22 @@ export default function RecorderPanel({
                                 </IconButton>
                             )}
                             {initRecording && (
-                                <IconButton
-                                    className="start-button button_recorder"
-                                    title="Save recording"
-                                    disabled={recordSeconds === 0}
-                                    onClick={handlerSendRecord}
-                                >
-                                    <SendIcon />
-                                </IconButton>
+                                loadingSendRecordMessage ?
+                                    <IconButton
+                                        disabled
+                                        className="start-button button_recorder"
+                                    >
+                                        <CircularProgress size="1rem" style={{ color: "gray" }} />
+                                    </IconButton>
+                                    :
+                                    <IconButton
+                                        className="start-button button_recorder"
+                                        title="Save recording"
+                                        disabled={recordSeconds === 0}
+                                        onClick={handlerSendRecord}
+                                    >
+                                        <SendIcon />
+                                    </IconButton>
                             )}
                         </div>
                     </div>
