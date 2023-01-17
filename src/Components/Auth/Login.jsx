@@ -3,7 +3,6 @@ import avatar from "./profileimg.png";
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 import { Link, Navigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,6 +35,7 @@ export const LoginComp = () => {
       setUserToken(resSuccess?.token?.access?.token, resSuccess?.token?.access?.expires)
       setRefreshToken(resSuccess?.token?.refresh?.token)
       dispatch(authRegister(resSuccess));
+      location.reload();
     }
     else
       toast.error("Exist an error.")
