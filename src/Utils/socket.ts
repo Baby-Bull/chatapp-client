@@ -1,7 +1,7 @@
 import { getItemFromCookie } from "./storage";
 
 const urlSocket =
-    //"wss://thangchatapp.kiaidev.com"
+    //    "wss://thangchatapp.kiaidev.com"
     // ||
     "ws://localhost:8080";
 
