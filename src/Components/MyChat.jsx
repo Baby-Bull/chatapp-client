@@ -110,7 +110,6 @@ export const MyChat = () => {
             <List>
               {resultChatroom.map((u) => (
                 <ListItem
-                  key={index}
                   onClick={() => submitCreateNewChat(u)}
                 >
                   <ListItemButton>
