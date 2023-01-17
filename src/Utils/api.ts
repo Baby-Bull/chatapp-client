@@ -5,7 +5,7 @@ import { getItemFromCookie } from "./storage";
 export const api = axios.create({
     baseURL:
         //"http://localhost:8000" ||
-        'http://123.25.21.16:8459',
+        'https://thangchatapp.kiaidev.com',
     headers: {
         'Content-Type': 'application/json;charset=UTF-8',
         "Access-Control-Allow-Origin": "*",

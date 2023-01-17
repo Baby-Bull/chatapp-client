@@ -1,7 +1,7 @@
 import { getItemFromCookie } from "./storage";
 
 const urlSocket =
-    "ws://123.25.21.16:8459"
+    "wss://thangchatapp.kiaidev.com"
 //|| "ws://localhost:8080";
 
 //using eventsArray to storage elements that contain two properties: 
