@@ -9,8 +9,9 @@ import CallingReceivedPanel from "./MiniComponents/CallingReceivedPanel";
 import SideNavbar from "./SideNavbar";
 import webSocket from "../Utils/socket";
 
-
 export const HomeComp = () => {
+  // console.log(process.env.REACT_APP_URL_SERVER);
+
   const { user, loading, error } = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
   const [callerInfo, setCallerInfo] = useState({});

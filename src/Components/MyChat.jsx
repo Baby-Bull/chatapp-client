@@ -109,7 +109,10 @@ export const MyChat = () => {
           <Box className="search_res" >
             <List>
               {resultChatroom.map((u) => (
-                <ListItem onClick={() => submitCreateNewChat(u)}>
+                <ListItem
+                  key={index}
+                  onClick={() => submitCreateNewChat(u)}
+                >
                   <ListItemButton>
                     <Grid container spacing={2}>
                       <Grid item xs={4}>
@@ -182,7 +185,10 @@ export default function Notificationcomp() {
           <Typography sx={{ p: 2, width: 170 }}>No new messages.</Typography>
         ) : (
           unseenmsg.map((el, index) => (
-            <Typography key={index} sx={{ p: 2, width: 170 }}>
+            <Typography
+              key={index}
+              sx={{ p: 2, width: 170 }}
+            >
               {el.sender.name + " " + el.content.substring(0, 15) + "..."}
             </Typography>
           ))

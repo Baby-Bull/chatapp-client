@@ -1,8 +1,8 @@
 import { getItemFromCookie } from "./storage";
 
 const urlSocket =
-   // "wss://funky-brass-papyrus.glitch.me:8080" ||
-    "ws://localhost:8080";
+    "ws://123.25.21.16:8459"
+//|| "ws://localhost:8080";
 
 //using eventsArray to storage elements that contain two properties: 
 //1.event's title (work as a key for array handle)  2.action handling this event(add new message, push new notifications, ...)

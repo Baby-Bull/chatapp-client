@@ -1,9 +1,8 @@
-import { useLayoutEffect, useState } from "react";
 import "./App.css";
 import { AllRoutes } from "./Components/AllRoutes";
-import webSocket from "./Utils/socket";
 
 function App() {
+  // console.log(process.env.REACT_APP_URL_SERVER);
   return (
     <AllRoutes />
   );
