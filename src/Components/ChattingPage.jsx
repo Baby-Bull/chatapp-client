@@ -20,6 +20,7 @@ import dayjs from "dayjs";
 import { FileUpload } from "./MiniComponents/FileUpload";
 import { getFileNameFromURL, UploadFileToFirebase } from "../Helpers/UploadFileToFirebase";
 import CallingSentPanel from "./MiniComponents/CallingSentPanel";
+import ModalCutom from "./Commons/ModalCustom";
 
 var socket, currentChattingWith;
 const ColorButton = styled(Button)(() => ({
@@ -56,6 +57,8 @@ export const ChattingPage = () => {
 
 
   const [openCallingSentPanel, setOpenCallingSentPanel] = useState(false);
+  const [openPreviewModal, setOpenPreviewModal] = useState(false)
+  const [srcImagePreview, setSrcImagePreview] = useState("")
 
   useEffect(() => {
     const handleMessage = (rev_message) => {
@@ -167,6 +170,10 @@ export const ChattingPage = () => {
                   {
                     "text": <p>{el.content}</p>,
                     "image": <embed
+                      onClick={() => {
+                        setSrcImagePreview(el?.content)
+                        setOpenPreviewModal(true);
+                      }}
                       className="img_message"
                       src={el.content}
                       alt=""
@@ -228,6 +235,19 @@ export const ChattingPage = () => {
           sender_id={user._id}
           currentFriend={currentFriend}
         />}
+      <ModalCutom
+        open={openPreviewModal}
+        onClose={() => setOpenPreviewModal(false)}
+      >
+        <Box>
+          <embed
+            className="modal_preview"
+            src={srcImagePreview}
+            alt=""
+          />
+        </Box>
+      </ModalCutom>
+
     </Box >
   );
 };

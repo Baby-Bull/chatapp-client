@@ -90,6 +90,7 @@
             max-height: 40em;
             background-color: #ebebeb;
             overflow-y: auto;
+            z-index: 2;
         }
 
     }
@@ -212,6 +213,7 @@
     max-width: 20em;
     max-height: 10em;
     object-fit: contain;
+    cursor: pointer;
 }
 
 .chattingpage {
