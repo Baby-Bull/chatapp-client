@@ -26,10 +26,14 @@ export const LoginComp = () => {
     dispatch(authLoading(true));
     const res = await login(regData.email, regData.password);
     const resSuccess = res?.data;
-    if (res?.statusCode === 404)
+    if (res?.statusCode === 404) {
       toast.error("Email doesn't exist.");
-    else if (res?.status === 401)
+      dispatch(authLoading(false));
+    }
+    else if (res?.status === 401) {
       toast.error("Wrong password.");
+      dispatch(authLoading(false));
+    }
     else if (res.statusCode === 200) {
       toast.success("Login successful");
       setUserToken(resSuccess?.token?.access?.token, resSuccess?.token?.access?.expires)
@@ -37,8 +41,10 @@ export const LoginComp = () => {
       dispatch(authRegister(resSuccess));
       location.reload();
     }
-    else
+    else {
       toast.error("Exist an error.")
+      dispatch(authLoading(false));
+    }
   };
 
   if (user && user._id) {
