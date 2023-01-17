@@ -146,12 +146,12 @@ export const FileUpload = ({
                     />
                 </div>
             }
-
-            {openRecordPanel && <RecorderPanel
+            <RecorderPanel
+                openRecordPanel={openRecordPanel}
                 setOpenRecordPanel={setOpenRecordPanel}
                 onSelectItem={onSelectItem}
                 handleSendRecordMessage={handleSendRecordMessage}
-            />}
+            />
         </div>
     )
 }

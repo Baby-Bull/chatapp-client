@@ -57,7 +57,12 @@ export const LoginComp = () => {
 
         <div className="details-cont">
           <p>Email</p>
-          <input name="email" onChange={handleChange} className="inputcom" />
+          <input
+            type="email"
+            name="email"
+            onChange={handleChange}
+            className="inputcom"
+          />
 
           <p>Password</p>
           <input

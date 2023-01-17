@@ -12,6 +12,7 @@ import { IconButton } from "@mui/material";
 import { toast } from "react-toastify";
 
 export default function RecorderPanel({
+    openRecordPanel,
     setOpenRecordPanel,
     onSelectItem,
     handleSendRecordMessage
@@ -54,7 +55,7 @@ export default function RecorderPanel({
 
     return (
         <ModalCustom
-            open={true}
+            open={openRecordPanel}
             className="panel_record"
             onClose={() => setOpenRecordPanel(false)}
         >

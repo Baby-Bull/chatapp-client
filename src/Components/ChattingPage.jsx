@@ -6,6 +6,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import styled from "@emotion/styled";
 import SendIcon from "@mui/icons-material/Send";
 import DownloadIcon from '@mui/icons-material/Download';
+import PhoneMissedIcon from '@mui/icons-material/PhoneMissed';
 import InputEmoji from "react-input-emoji";
 import React, { createRef, useEffect, useState } from "react";
 import { ChatlogicStyling, isSameSender } from "./ChatstyleLogic";
@@ -155,6 +156,13 @@ export const ChattingPage = () => {
                   bgcolor: "chattingPageLeftUserBg.default"
                 }}
               >
+                {/* <Box className="missed_call">
+                  <Box className="">
+                    <span className="first_text">You missed call from </span>
+                    <span className="second_text">{currentFriend?.username}</span>
+                  </Box>
+                  <PhoneMissedIcon className="icon_download" />
+                </Box> */}
                 {
                   {
                     "text": <p>{el.content}</p>,
