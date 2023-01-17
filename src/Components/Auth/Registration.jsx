@@ -65,7 +65,7 @@ export const RegisterComp = () => {
 
           <p>Email</p>
           <input
-            type="password"
+            type="email"
             onChange={handleChange}
             name="email"
             className="inputcom"
