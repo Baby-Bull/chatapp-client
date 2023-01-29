@@ -21,7 +21,7 @@ export default function CallingSentPanel({ setOpenCallingSentPanel, chatroom_id,
         });
     }
 
-    return (
+    return (<>
         <Modal
             open={true}
         // onClose={handleClose}
@@ -62,5 +62,10 @@ export default function CallingSentPanel({ setOpenCallingSentPanel, chatroom_id,
                 >End</Typography>
             </Box>
         </Modal>
+        <CallingPanel
+            userVideo={userVideo}
+            partnerVideo={partnerVideo}
+        />
+    </>
     )
 }

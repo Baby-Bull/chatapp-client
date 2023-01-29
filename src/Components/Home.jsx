@@ -1,5 +1,5 @@
 import { Avatar, Box } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import { ChattingPage } from "./ChattingPage";
@@ -15,8 +15,10 @@ export const HomeComp = () => {
   const { user, loading, error } = useSelector((store) => store.user);
   const { chatting } = useSelector((store) => store.chatting);
   const [callerInfo, setCallerInfo] = useState({});
-
   const [openCallingReceivedPanel, setOpenCallingReceivedPanel] = useState(false);
+
+  const userVideo = useRef();
+  const partnerVideo = useRef();
 
   const handleCallRequestFromServer = async (message) => {
     setCallerInfo(message?.sender_info);
@@ -48,13 +50,23 @@ export const HomeComp = () => {
     >
       <SideNavbar />
       <MyChat />
-      {chatting._id ? <ChattingPage /> : <MessageStarter {...user} />}
+      {chatting._id ?
+        <ChattingPage
+          userVideo={userVideo}
+          partnerVideo={partnerVideo}
+        /> :
+        <MessageStarter {...user} />
+      }
+
       {openCallingReceivedPanel &&
         <CallingReceivedPanel
           setOpenCallingReceivedPanel={setOpenCallingReceivedPanel}
           chatroom_id={chatting._id}
           sender_id={user._id}
           callerInfo={callerInfo}
+
+          userVideo={userVideo}
+          partnerVideo={partnerVideo}
         />}
     </Box>
   );
