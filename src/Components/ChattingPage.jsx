@@ -21,8 +21,8 @@ import { FileUpload } from "./MiniComponents/FileUpload";
 import { getFileNameFromURL, UploadFileToFirebase } from "../Helpers/UploadFileToFirebase";
 import CallingSentPanel from "./MiniComponents/CallingSentPanel";
 import ModalCutom from "./Commons/ModalCustom";
-import Peer from "simple-peer";
 import { CallingPanel } from "./MiniComponents/CallingPanel";
+import Peer from "peerjs";
 
 var socket, currentChattingWith;
 const ColorButton = styled(Button)(() => ({
@@ -38,7 +38,7 @@ const ColorButton = styled(Button)(() => ({
 }));
 
 
-export const ChattingPage = ({ userVideo, partnerVideo }) => {
+export const ChattingPage = ({ userVideo, partnerVideo, peerInstance }) => {
   const scrolldiv = createRef();
   const dispatch = useDispatch();
   const { user, token } = useSelector((store) => store.user);
@@ -63,20 +63,7 @@ export const ChattingPage = ({ userVideo, partnerVideo }) => {
   const [openPreviewModal, setOpenPreviewModal] = useState(false);
   const [srcImagePreview, setSrcImagePreview] = useState("");
 
-  const [stream, setStream] = useState();
-
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true
-    }).then(stream => {
-      setStream(stream);
-      if (userVideo.current) {
-        userVideo.current.srcObject = stream;
-      }
-    })
-
-
     const handleMessage = (rev_message) => {
       dispatch(sendMessage(rev_message))
       // InputContWithEmog(user?._id, _id)
@@ -99,6 +86,31 @@ export const ChattingPage = ({ userVideo, partnerVideo }) => {
     }
   }, []);
 
+
+  const callHandle = () => {
+    const peer = new Peer();
+
+    peer.on('open', (id) => {
+      setUserPeerId(id)
+    });
+
+    peer.on('call', (call) => {
+      var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+      getUserMedia({ video: true, audio: true }, (mediaStream) => {
+        userVideo.current.srcObject = mediaStream;
+        userVideo.current.play();
+        call.answer(mediaStream)
+        call.on('stream', function (remoteStream) {
+          partnerVideo.current.srcObject = remoteStream
+          partnerVideo.current.play();
+        });
+      });
+    })
+
+    peerInstance.current = peer;
+  }
+
   useEffect(() => {
     //_id is of selected chat so that user can join same chat room
     if (!_id) return;
@@ -116,37 +128,6 @@ export const ChattingPage = ({ userVideo, partnerVideo }) => {
   const handleNotyfy = (newMessage) => {
     dispatch(addUnseenmsg(newMessage));
   };
-
-  const callPeer = (id) => {
-    const peer = new Peer({
-      initiator: true,
-      trickle: false,
-      stream: stream
-    });
-    setOpenCallingSentPanel(true);
-    webSocket.emit({
-      message_type: "call_request_from_client",
-      chatroom_id: _id,
-      sender_id: user?._id,
-      createdAt: dayjs()
-    });
-
-    peer.on("signal", data => {
-    })
-
-    peer.on("stream", stream => {
-      if (partnerVideo.current) {
-        partnerVideo.current.srcObject = stream;
-      }
-    });
-
-    webSocket.on("accept_call_request_from_server", (signal) => {
-      setOpenCallingSentPanel(false);
-      setOpenCallingPanel(true);
-      peer.signal(signal);
-    });
-
-  }
 
   return (
     <Box
@@ -170,13 +151,19 @@ export const ChattingPage = ({ userVideo, partnerVideo }) => {
         <Box>
           <Box className="user-fet">
             <SearchIcon />
-            <CallIcon
+            <VideoCallIcon
               onClick={() => {
-                callPeer();
-              }
-              }
+                setOpenCallingSentPanel(true);
+                callHandle()
+                webSocket.emit({
+                  message_type: "call_request_from_client",
+                  chatroom_id: _id,
+                  sender_id: user?._id,
+                  createdAt: dayjs()
+                });
+              }}
             />
-            <VideoCallIcon />
+            {/* <VideoCallIcon /> */}
             <MoreHorizIcon />
           </Box>
         </Box>

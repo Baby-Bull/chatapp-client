@@ -9,8 +9,6 @@ import ScreenShareIcon from '@mui/icons-material/ScreenShare';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import "../Utils/init";
 
-import Peer from "simple-peer";
-
 export const MeetingComp = () => {
 
 

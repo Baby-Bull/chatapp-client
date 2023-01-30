@@ -1,9 +1,9 @@
 import { getItemFromCookie } from "./storage";
 
 const urlSocket =
-    //"wss://thangchatapp.kiaidev.com"
+    "wss://thangchatapp.kiaidev.com";
     // ||
-    "ws://localhost:8080";
+    //"ws://localhost:8080";
 
 //using eventsArray to storage elements that contain two properties: 
 //1.event's title (work as a key for array handle)  2.action handling this event(add new message, push new notifications, ...)

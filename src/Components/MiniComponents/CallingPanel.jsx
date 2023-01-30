@@ -8,7 +8,7 @@ import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import ScreenShareIcon from '@mui/icons-material/ScreenShare';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
-export const CallingPanel = ({ userVideo, partnerVideo }) => {
+export const CallingPanel = ({ userVideo, partnerVideo, setOpenCallingPanel }) => {
 
     return (
         <Modal
@@ -65,7 +65,10 @@ export const CallingPanel = ({ userVideo, partnerVideo }) => {
                         <KeyboardVoiceIcon fontSize="inherit" />
                     </IconButton>
                     <IconButton size="large" className='button_controller'>
-                        <CallEndIcon fontSize="inherit" />
+                        <CallEndIcon
+                            onClick={() => setOpenCallingPanel(false)}
+                            fontSize="inherit"
+                        />
                     </IconButton>
                 </Box>
             </Box>

@@ -6,7 +6,6 @@ import CallIcon from '@mui/icons-material/Call';
 import PhoneDisabledIcon from '@mui/icons-material/PhoneDisabled';
 import webSocket from "../../Utils/socket"
 import dayjs from "dayjs";
-import Peer from "simple-peer";
 import { CallingPanel } from "./CallingPanel";
 
 
@@ -16,7 +15,10 @@ export default function CallingReceivedPanel({
     sender_id,
     callerInfo,
     userVideo,
-    partnerVideo
+    partnerVideo,
+    peerInstance,
+    userPeerId,
+    setOpenCallingPanel
 }) {
 
     const handleRejectCallingRequest = () => {
@@ -29,25 +31,27 @@ export default function CallingReceivedPanel({
         });
     }
 
+    const acceptCall = (remotePeerId) => {
+        var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+        getUserMedia({ video: true, audio: true }, (mediaStream) => {
+
+            userVideo.current.srcObject = mediaStream;
+            userVideo.current.play();
+
+            const call = peerInstance.current.call(remotePeerId, mediaStream)
+
+            call.on('stream', (remoteStream) => {
+                partnerVideo.current.srcObject = remoteStream
+                partnerVideo.current.play();
+            });
+        });
+    }
+
     const handleAcceptCallingRequest = () => {
         setOpenCallingReceivedPanel(false);
-
-        const peer = new Peer({
-            initiator: true,
-            trickle: false,
-            stream: stream
-        });
-
-        peer.on("signal", data => {
-
-        })
-
-        peer.on("stream", stream => {
-            if (partnerVideo.current) {
-                partnerVideo.current.srcObject = stream;
-            }
-        })
-
+        setOpenCallingPanel(true);
+        acceptCall(userPeerId);
         webSocket.emit({
             message_type: "accept_calling_request_from_client",
             chatroom_id: chatroom_id,
@@ -92,10 +96,6 @@ export default function CallingReceivedPanel({
 
                 </Box>
             </Modal>
-            <CallingPanel
-                userVideo={userVideo}
-                partnerVideo={partnerVideo}
-            />
         </>
     )
 }

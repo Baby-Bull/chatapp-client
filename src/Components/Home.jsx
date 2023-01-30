@@ -8,6 +8,8 @@ import CallingSentPanel from "./MiniComponents/CallingSentPanel";
 import CallingReceivedPanel from "./MiniComponents/CallingReceivedPanel";
 import SideNavbar from "./SideNavbar";
 import webSocket from "../Utils/socket";
+import Peer from "peerjs";
+import { CallingPanel } from "./MiniComponents/CallingPanel";
 
 export const HomeComp = () => {
   // console.log(process.env.REACT_APP_URL_SERVER);
@@ -16,9 +18,39 @@ export const HomeComp = () => {
   const { chatting } = useSelector((store) => store.chatting);
   const [callerInfo, setCallerInfo] = useState({});
   const [openCallingReceivedPanel, setOpenCallingReceivedPanel] = useState(false);
+  const [openCallingPanel, setOpenCallingPanel] = useState(false);
 
-  const userVideo = useRef();
-  const partnerVideo = useRef();
+
+  const [userPeerId, setUserPeerId] = useState('');
+  const [partnerPeerId, setPartnerPeerId] = useState('');
+  const partnerVideo = useRef(null);
+  const userVideo = useRef(null);
+  const peerInstance = useRef(null);
+
+  // useEffect(() => {
+  //   const peer = new Peer();
+
+  //   peer.on('open', (id) => {
+  //     setUserPeerId(id)
+  //   });
+
+  //   peer.on('call', (call) => {
+  //     var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+  //     getUserMedia({ video: true, audio: true }, (mediaStream) => {
+  //       userVideo.current.srcObject = mediaStream;
+  //       userVideo.current.play();
+  //       call.answer(mediaStream)
+  //       call.on('stream', function (remoteStream) {
+  //         partnerVideo.current.srcObject = remoteStream
+  //         partnerVideo.current.play();
+  //       });
+  //     });
+  //   })
+
+  //   peerInstance.current = peer;
+  // }, [])
+
 
   const handleCallRequestFromServer = async (message) => {
     setCallerInfo(message?.sender_info);
@@ -54,6 +86,7 @@ export const HomeComp = () => {
         <ChattingPage
           userVideo={userVideo}
           partnerVideo={partnerVideo}
+          peerInstance={peerInstance}
         /> :
         <MessageStarter {...user} />
       }
@@ -67,7 +100,19 @@ export const HomeComp = () => {
 
           userVideo={userVideo}
           partnerVideo={partnerVideo}
-        />}
+          peerInstance={peerInstance}
+          userPeerId={userPeerId}
+
+          setOpenCallingPanel={setOpenCallingPanel}
+        />
+      }
+      {openCallingPanel &&
+        <CallingPanel
+          userVideo={userVideo}
+          partnerVideo={partnerVideo}
+          setOpenCallingPanel={setOpenCallingPanel}
+        />
+      }
     </Box>
   );
 };
